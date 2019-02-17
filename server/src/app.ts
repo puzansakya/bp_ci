@@ -92,6 +92,12 @@ class App {
         this.express.use(cors());
         this.express.use(compression());
         this.express.use(helmet());
+        this.express.use(helmet.contentSecurityPolicy({
+            directives: {
+                defaultSrc: ["'self'"],
+                styleSrc: ["'self'", 'fonts.googleapis.com']
+            }
+        }))
 
         // this.express.engine('html', ngExpressEngine({
         //     bootstrap: AppServerModuleNgFactory,
