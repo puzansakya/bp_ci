@@ -1,0 +1,17 @@
+.category {
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    &:hover {
+        cursor: pointer;
+    }
+    &-active {
+        background-color: #5cb85c;
+        color: #fff;
+        &:hover {
+            background-color: #449d44;
+        }
+    }
+}
+

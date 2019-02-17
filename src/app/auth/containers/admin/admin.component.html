@@ -1,0 +1,10 @@
+<h1>Admin</h1>
+<ng-container *ngIf="user$ | async as user">
+  hello {{(user.email)}}
+</ng-container>
+<p>This page can only be accessed by administrators.</p>
+<div>
+  All users from secure (admin only) api end point:
+</div>
+
+<button (click)="logout()">Logout</button>

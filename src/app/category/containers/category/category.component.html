@@ -1,0 +1,45 @@
+<!-- Begin Article -->
+<div class="container">
+  <div class="row">
+    <!-- Begin Post -->
+    <div class="col-md-8 col-md-offset-2 col-xs-12">
+      <div class="section-title">
+        <h2>
+          <span>Featured</span>
+        </h2>
+      </div>
+    </div>
+    <!-- End Post -->
+  </div>
+  <div class="row">
+    <div class="col-md-4 col-md-offset-2 col-xs-12">
+      <div class="category category-active" (click)=(showAddForm())>
+        New
+      </div>
+      <div class="category" *ngFor="let c of categories$ | async" (click)="showEditForm(c)">
+        {{c.category}}
+      </div>
+      <loader *ngIf="(loading$ | async)"></loader>
+    </div>
+    <div class="col-md-6 col-xs-12">
+      <category-form [isEdit]="isEdit" [category]="model" (create)="onCreate($event)" (update)="onUpdate($event)"></category-form>
+    </div>
+  </div>
+</div>
+<!-- End Article -->
+
+<!-- Begin Footer -->
+<div class="container">
+  <div class="footer">
+    <p class="pull-left">
+      Copyright &copy; 2017 Your Website Name
+    </p>
+    <p class="pull-right">
+      Mediumish Theme by
+      <a target="_blank" href="https://www.wowthemes.net">WowThemes.net</a>
+    </p>
+    <div class="clearfix">
+    </div>
+  </div>
+</div>
+<!-- End Footer -->

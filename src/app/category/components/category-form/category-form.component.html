@@ -1,0 +1,39 @@
+<!-- <form [formGroup]="form">
+
+  <div class="d" [ngClass]="{
+      'has-error': category.invalid && (category.dirty || category.touched),
+      'has-success': category.valid && (category.dirty || category.touched)}">
+    <label class="d__label">Category</label>
+    <input type="text" class="form-control" name="category" [ngModel]="model.category | async" (ngModelChange)="onChange($event)"
+      required #category="ngModel">
+    <ng-container *ngIf="category.errors && (category.dirty || category.touched)">
+      <span *ngIf="category.errors.required" class="d__desc">Please enter category.</span>
+    </ng-container>
+  </div>
+  <button *ngIf="!isEdit" type="submit" class="btn btn-success btn-small" [disabled]="f.invalid">Submit</button>
+  <button *ngIf="isEdit" type="submit" class="btn btn-success btn-small" [disabled]="f.invalid">Update</button>
+  <button *ngIf="isEdit" type="button" class="btn btn-danger btn-small" (click)="onDelete()">Delete</button>
+  </form> -->
+
+<form [formGroup]="form">
+
+  <div class="d">
+    <label class="d__label">Category</label>
+    <input type="text" formControlName="category" placeholder="e.g. Life" class="form-control" [class.d__error]="categoryControlInvalid">
+    <ng-container>
+      <span *ngIf="categoryControlInvalid" class="d__desc">Please enter category.</span>
+    </ng-container>
+  </div>  
+  <button type="button" class="btn btn-success btn-small" *ngIf="!isEdit" (click)="createCategory(form)">
+    Create
+  </button>
+
+  <button type="button" class="btn btn-warning btn-small" *ngIf="exists && isEdit" (click)="updateCategory(form)">
+    Update
+  </button>
+
+  <!-- <button type="button" class="btn btn-danger btn-small" *ngIf="exists && isEdit" (click)="removeCategory(form)">
+    Delete
+  </button> -->
+
+</form>

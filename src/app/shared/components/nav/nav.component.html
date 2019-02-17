@@ -1,0 +1,143 @@
+<!-- Begin Nav
+================================================== -->
+<nav class="navbar navbar-toggleable-sm navbar-light bg-white fixed-top mediumnavigation nav__lg">
+  <div class="container">
+    <!-- Begin Logo -->
+    <a class="navbar-brand" href="index.html">
+      <img src="assets/img/logo.png" alt="logo">
+    </a>
+    <!-- End Logo -->
+    <div class="collapse navbar-collapse navbar-flex-center" [ngClass]="{ 'show': isShow }" id="navbarsExampleDefault">
+      <!-- Begin Menu -->
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <a class="nav-link" routerLink="/">Stories</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="authors">Author</a>
+        </li>
+      </ul>
+      <!-- End Menu -->
+
+      <!-- Begin Search -->
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="text" placeholder="Search">
+        <span class="search-icon">
+          <svg class="svgIcon-use" width="25" height="25" viewbox="0 0 25 25">
+            <path d="M20.067 18.933l-4.157-4.157a6 6 0 1 0-.884.884l4.157 4.157a.624.624 0 1 0 .884-.884zM6.5 11c0-2.62 2.13-4.75 4.75-4.75S16 8.38 16 11s-2.13 4.75-4.75 4.75S6.5 13.62 6.5 11z"></path>
+          </svg>
+        </span>
+      </form>
+      <!-- End Search -->
+    </div>
+
+    <!-- Start login button -->
+    <div class="login__btn" *ngIf="!(user$ | async)">
+      <a routerLink="login" class="btn follow">Login</a>
+    </div>
+    <!-- End login button -->
+
+    <!-- start avatar -->
+    <div ngbDropdown placement="bottom" class="popover__wrapper" *ngIf="(user$ | async) as user">
+      <span class="meta-footer-thumb" ngbDropdownToggle>
+        <img class="author-thumb" src="assets/img/avatars/alex.jpg" alt="Sal">
+      </span>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="push popover__content">
+        <ul class="popover__content--list">
+          <li class="popover__content--item">
+            <a href="#" class="popover__content--link">How you doin'?</a>
+          </li>
+          <li class="popover__content--item popover__content--seperator ">
+          </li>
+          <li class="popover__content--item">
+            <a routerLink="create" *allow="['ADMIN'];provide:user.roles" class="popover__content--link">New Story</a>
+          </li>
+          <li class="popover__content--item">
+            <a href="#" class="popover__content--link">Stories</a>
+          </li>
+          <li class="popover__content--item">
+            <a href="#" class="popover__content--link">Series</a>
+          </li>
+          <li class="popover__content--item">
+            <a routerLink="categories" *allow="['ADMIN'];provide:user.roles" class="popover__content--link">Categories</a>
+          </li>
+          <li class="popover__content--item popover__content--seperator ">
+          </li>
+          <li class="popover__content--item">
+            <a (click)="logOut()" class="popover__content--link">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- End Avatar -->
+  </div>
+</nav>
+<!-- End Nav
+================================================== -->
+
+<nav class="nav__sm navbar-light bg-white fixed-top mediumnavigation">
+  <div class="nav__wrapper">
+    <div class="navigator">
+      <input type="checkbox" id="navi-toggle" class="navigator__checkbox">
+
+      <label for="navi-toggle" class="navigator__button">
+        <span class="navigator__icon">&nbsp;</span>
+      </label>
+
+      <div class="navigator__background">&nbsp;</div>
+
+      <nav class="navigator__nav">
+        <ul class="navigator__list">
+          <li class="navigator__item">
+            <a href="#" class="navigator__link" routerLink="/">Stories</a>
+          </li>
+          <li class="navigator__item">
+            <a class="navigator__link" routerLink="authors">Authors</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <a class="navbar-brand" href="index.html">
+      <img src="assets/img/logo.png" alt="logo">
+    </a>
+
+    <!-- Start login button -->
+    <div class="login__btn" *ngIf="!(user$ | async)">
+      <a routerLink="login" class="btn follow">Login</a>
+    </div>
+    <!-- End login button -->
+
+    <div ngbDropdown placement="bottom" class="popover__wrapper" *ngIf="(user$ | async) as user">
+      <span class="meta-footer-thumb" ngbDropdownToggle>
+        <img class="author-thumb" src="assets/img/avatars/alex.jpg" alt="Sal">
+      </span>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="push popover__content">
+        <ul class="popover__content--list">
+          <li class="popover__content--item">
+            <a href="#" class="popover__content--link">How you doin'?</a>
+          </li>
+          <li class="popover__content--item popover__content--seperator ">
+          </li>
+          <li class="popover__content--item">
+            <a routerLink="create" *allow="['ADMIN'];provide:user.roles" class="popover__content--link">New Story</a>
+          </li>
+          <li class="popover__content--item">
+            <a href="#" class="popover__content--link">Stories</a>
+          </li>
+          <li class="popover__content--item">
+            <a href="#" class="popover__content--link">Series</a>
+          </li>
+          <li class="popover__content--item">
+            <a routerLink="categories" *allow="['ADMIN'];provide:user.roles" class="popover__content--link">Categories</a>
+          </li>
+          <li class="popover__content--item popover__content--seperator ">
+          </li>
+          <li class="popover__content--item">
+            <a (click)="logOut()" class="popover__content--link">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

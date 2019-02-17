@@ -1,0 +1,20 @@
+.card-block__minheight {
+    height: 150px;
+    overflow: hidden;
+    &::before {
+        background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, white 50%);
+        content: '\200C';
+        display: block;
+        position: absolute;
+        right: 0;
+        bottom: 88px;
+        width: 30%;
+        height: 20px;
+    }
+}
+
+.card .img-fluid {
+    max-height: 158.5px;
+    width: 100%;
+    object-fit: cover;
+}

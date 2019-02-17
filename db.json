@@ -1,0 +1,124 @@
+{    
+    "articles": [
+      {
+        "id": 1,
+        "heading": "Hear, There, and Everywhere",
+        "description": "Facebook Design in conversation with co-authors Fuchsia MacAree and Scott Boms on their book and the importance of listening",
+        "backdrop": "https://facebook.design/public/images/hear-there-and-everywhere.png",
+        "type": "article",
+        "category": "Process",
+        "author": "Facebook Design",
+        "avatar": "https://facebook.design/public/images/facebookdesign.jpeg"
+      },
+      {
+        "id": 2,
+        "heading": "An Unforgettable Valentine’s Day",
+        "description": "A product design intern’s resource for design students and romantics",
+        "backdrop": "https://facebook.design/public/images/an-unforgettable-valentines-day.png",
+        "type": "article",
+        "category": "careers",
+        "author": "Caterina Beleffi",
+        "avatar": "https://facebook.design/public/images/avatars/caterina.jpeg"
+      },
+      {
+        "id": 3,
+        "heading": "Able, Allowed, Should; Navigating Modern Tech Ethics",
+        "description": "I want to share a talk I gave on the design track at SXSW in early March of this year. This talk was inspired by a deeply held belief that we are at a critical time in my company...",
+        "backdrop": "https://facebook.design/public/images/able-allowed-should-navigating-modern-tech-ethics.png",
+        "type": "article",
+        "category": "Process",
+        "author": "Margaret Gould Stewart",
+        "avatar": "https://facebook.design/public/images/avatars/margaret.jpg"
+      },
+      {
+        "id": 4,
+        "heading": "Designing New Ways to Give Context to News Stories",
+        "description": "When scrolling through News Feed, it’s sometimes difficult to judge the credibility of an article. As with all information on the internet, if we’re unfamiliar with an article’s source...",
+        "backdrop": "https://facebook.design/public/images/designing-new-ways-to-give-context-to-news-stories.png",
+        "type": "article",
+        "category": "case studies",
+        "author": "Jeff Smith",
+        "avatar": "https://facebook.design/public/images/avatars/jeff.jpg"
+      },
+      {
+        "id": 5,
+        "heading": "Meditation and Design at Facebook",
+        "description": "How does a routine meditation practice benefit us as designers? What is it about Facebook that creates an environment that encourages meditation and mindfulness? And how can other companies do the same?",
+        "backdrop": "https://facebook.design/public/images/meditation-and-design-at-facebook.png",
+        "type": "article",
+        "category": "culture",
+        "author": "Garron Engstrom",
+        "avatar": "https://facebook.design/public/images/avatars/garron.png"
+      },
+      {
+        "id": 6,
+        "heading": "Designing Against Misinformation",
+        "description": "Scrolling through News Feed, it can be hard to judge what stories are true or false. Should you trust everything that you see, even if it comes from someone whom you don’t know well?... ",
+        "backdrop": "https://facebook.design/public/images/designing-against-misinformation.png",
+        "type": "article",
+        "category": "case studies",
+        "author": "Jeff Smith",
+        "avatar": "https://facebook.design/public/images/avatars/jeff.jpg"
+      },
+      {
+        "id": 7,
+        "heading": "The Enterprising Designer: Beyond Consumer Product Design",
+        "description": "Which is better: A career in consumer product design or a career in enterprise product design?",
+        "backdrop": "https://facebook.design/public/images/the-enterprising-designer-beyond-consumer-product-design.png",
+        "type": "article",
+        "category": "careers",
+        "author": "Siva Sabaretnam",
+        "avatar": "https://facebook.design/public/images/avatars/siva.jpg"
+      },
+      {
+        "id": 8,
+        "heading": "One Year Designing at WhatsApp",
+        "description": "Thoughts on how WhatsApp and Facebook design at scale",
+        "backdrop": "https://facebook.design/public/images/one-year-designing-at-whatsapp.png",
+        "type": "article",
+        "category": "case studies",
+        "author": "Charlie Deets",
+        "avatar": "https://facebook.design/public/images/avatars/charlie.jpg"
+      },
+      {
+        "id": 9,
+        "heading": "Evolving the Facebook News Feed to Serve You Better",
+        "description": "Starting late last year, we set out to explore how we could make News Feed more readable, conversational, and easier to navigate...",
+        "backdrop": "https://facebook.design/public/images/evolving_the_facebook_news_feed_to_serve_you_better.jpg",
+        "type": "article",
+        "category": "case studies",
+        "author": "Ryan Freitas",
+        "avatar": "https://facebook.design/public/images/avatars/42D08C09-0D5E-4887-A26A-F2DCEF0A95B0.jpeg"
+      },
+      {
+        "id": 10,
+        "heading": "How to Enhance Mobile Interactions with Sound Design",
+        "description": "When I talk to people about sound design and the role it plays at Facebook, many people seem puzzled at first. “Sound? Facebook?”...",
+        "backdrop": "https://facebook.design/public/images/sound-design-and-enhancing-mobile-interactions-at-facebook.jpg",
+        "type": "article",
+        "category": "case studies",
+        "author": "Will Littlejohn",
+        "avatar": "https://facebook.design/public/images/avatars/will.jpg"
+      },
+      {
+        "id": 11,
+        "heading": "Questions to Ask as a New Designer on the Team",
+        "description": "Last summer I switched teams at Facebook. My first project seemed simple enough: redesign the sign up flow for Facebook Lite, an app for low-end Android phones.",
+        "backdrop": "https://facebook.design/public/images/questions-to-ask-as-a-new-designer-on-the-team.png",
+        "type": "article",
+        "category": "process",
+        "author": "Jason Cashdollar",
+        "avatar": "https://facebook.design/public/images/avatars/jason.jpg"
+      },
+      {
+        "id": 12,
+        "heading": "Tips for Becoming a Design Leader",
+        "description": "One of the things I love about working at Facebook is the emphasis we put on personal growth and the objectives people have for their careers...",
+        "backdrop": "https://facebook.design/public/images/avatars/andrewl.png",
+        "type": "article",
+        "category": "careers",
+        "author": "Andrew Lucas-Walsh",
+        "avatar": "https://facebook.design/public/images/tips-for-becoming-a-design-leader.png"
+      }
+    ]
+  }

@@ -1,0 +1,15 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server:watch": "tsc -w",
+    "server:run": "nodemon build/index.js",
+    "start": "concurrently --kill-others \"npm run server:watch\" \"npm run server:run\""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {}
+}
