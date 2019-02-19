@@ -8,6 +8,7 @@ import { User } from '../models/user.model';
 // global objects for ssr;
 import { LOCAL_STORAGE } from '@ng-toolkit/universal';
 import { isPlatformBrowser } from '@angular/common';
+import { Observable, throwError } from 'rxjs';
 
 @Injectable()
 export class AuthenticationService {
@@ -19,10 +20,10 @@ export class AuthenticationService {
     ) { }
 
     public getAuthUser(): User {
-        if (isPlatformBrowser(this.platformId)) {
-            return JSON.parse(this.localStorage.getItem('currentUser'));
-        }
-        return null;
+        // if (isPlatformBrowser(this.platformId)) {
+        //     return JSON.parse(this.localStorage.getItem('currentUser'));
+        // }        
+        return isPlatformBrowser(this.platformId) && JSON.parse(this.localStorage.getItem('currentUser'))        
     }
 
     login(email: string, password: string) {

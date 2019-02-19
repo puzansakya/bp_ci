@@ -41,13 +41,15 @@ export function reducer(state: AuthState = initialState, action: AuthAction): Au
         case AuthActionTypes.AUTHENTICATED_SUCCESS: {
             return {
                 ...state,
-                authenticated: true,
-                user: action.payload
+                authenticated: action.payload.authenticated,
+                user: action.payload.user
             }
         }
         case AuthActionTypes.AUTHENTICATED_FAILURE: {
             return {
                 ...state,
+                authenticated: false,
+                user: null,
                 error: action.payload
             }
         }
@@ -57,7 +59,7 @@ export function reducer(state: AuthState = initialState, action: AuthAction): Au
                 loading: true
             }
         }
-        case AuthActionTypes.LOGIN_SUCCESS: {            
+        case AuthActionTypes.LOGIN_SUCCESS: {
             return {
                 ...state,
                 authenticated: true,

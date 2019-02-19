@@ -28,7 +28,7 @@ export class AuthEffects {
             switchMap(payload => {
                 return new BehaviorSubject<User>(this.authService.getAuthUser())
                     .pipe(
-                        map(user => new authActions.AuthenticatedSuccess(user)),
+                        map(user => new authActions.AuthenticatedSuccess({ authenticated: (user !== null), user: user })),
                         catchError(error => of(new authActions.AuthenticatedFailure(error)))
                     );
             })

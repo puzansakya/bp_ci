@@ -2,33 +2,53 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot } from '@angular/router';
 
 import { Store } from '@ngrx/store';
-import { of, Observable } from 'rxjs';
-import { tap, filter, take, switchMap, catchError, map } from 'rxjs/operators';
+import { of, Observable, combineLatest } from 'rxjs';
+import { map, flatMap } from 'rxjs/operators';
 
-import * as fromStore from '../../root-store/article-store';
+import * as fromArticleStore from '../../root-store/article-store';
+import * as fromAuthStore from '../../root-store/auth-store';
 
 @Injectable()
 export class ArticleGuard implements CanActivate {
-    constructor(private store: Store<fromStore.ArticleState>) { }
 
-    canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-        // return this.checkStore(route.params.slug).pipe(
-        //     switchMap(() => of(true)),
-        //     catchError(() => of(false))
-        // );
-        this.store.dispatch(new fromStore.LoadArticle(route.params.slug));
+    values$ = combineLatest(
+        this.articleStore.select(fromArticleStore.getArticle),
+        this.authStore.select(fromAuthStore.getAuthUser)
+    ).pipe(
+        map(([first, second]) => {
+            // combineLatest returns an array of values, here we map those values to an object
+            return { first, second };
+        })
+    );
+
+    constructor(
+        private articleStore: Store<fromArticleStore.ArticleState>,
+        private authStore: Store<fromAuthStore.AuthState>
+    ) {
+
+    }
+
+    canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {        
+        this.checkStore()
+            .subscribe(x => console.log('PROF X', x));
+        this.articleStore.dispatch(new fromArticleStore.LoadArticle(route.params.slug));
         return of(true);
     }
 
-    // checkStore(slug: string): Observable<boolean> {
-    //     return this.store.select(fromStore.getArticle).pipe(
-    //         map(article => {
-    //             console.log('ArticleGuard checkStore');
-    //             if (article.heading !== slug || !article) {
-    //                 this.store.dispatch(new fromStore.LoadArticle(slug));
-    //             }
-    //         }),
-    //         map(val => !!val)
-    //     );
-    // }
+    /**
+     * 
+     */
+    checkStore(): Observable<boolean> {
+
+        // take the multiple observable and combines them
+        // somehow needs to handle unsubscription
+        return combineLatest(
+            this.articleStore.select(fromArticleStore.getArticle),
+            this.authStore.select(fromAuthStore.getAuthUser)
+        ).pipe(
+            flatMap(([first, second]) => {
+                return first && first.user.id === second.id ? of(true) : of(false);
+            })
+        );
+    }
 }
