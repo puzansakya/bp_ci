@@ -10,6 +10,7 @@ import * as fromContainers from './containers';
 import { FormsModule } from '@angular/forms';
 import { ArticleStoreModule } from '../root-store/article-store/article-store.module';
 import { SidebarModule } from 'ng-sidebar';
+import { CategoryStoreModule } from '../root-store/category-store/category-store.module';
 
 // routes
 export const ROUTES: Routes = [
@@ -26,7 +27,8 @@ export const ROUTES: Routes = [
     RouterModule.forChild(ROUTES),
     SidebarModule,
     QuillModule,
-    ArticleStoreModule
+    ArticleStoreModule,
+    CategoryStoreModule
   ],
   providers: [],
   declarations: [...fromContainers.containers],

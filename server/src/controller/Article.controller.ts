@@ -186,7 +186,8 @@ export class ArticleController {
                                     content: req.body.content,
                                     backdrop: result.secure_url,
                                     status: req.body.status,
-                                    user_id: user.sub
+                                    user_id: user.sub,
+                                    category_id: req.body.category_id,
                                 }).debug(true);
                             res.status(201).json(articleCreate);
                         } catch (error) {

@@ -103,6 +103,11 @@
  *         description: Article's heading
  *         required: true
  *         type: string
+ *       - name: category_id
+ *         in: formData
+ *         description: Category's id
+ *         required: true
+ *         type: number
  *       - name: slug
  *         in: formData
  *         description: Article's slug

@@ -4,6 +4,10 @@ import { Article } from '../../../core/models/article.model';
 // store
 import { Store } from '@ngrx/store';
 import * as fromArticleStore from './../../../root-store/article-store';
+import * as fromCategoryStore from '../../../root-store/category-store';
+import { tap, take, filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { Category } from '../../../core/models/category.model';
 
 
 @Component({
@@ -18,18 +22,38 @@ export class CreatePostComponent implements OnInit {
   currentFileUpload: File = null;
   url: string = "http://i.pravatar.cc/500?img=7";
 
-  model: Article = {};
-  constructor(public store: Store<fromArticleStore.ArticleState>) { }
+  categories$: Observable<Category[]>;
+
+  model: Article = {
+    category_id: null,
+  };
+  constructor(
+    public store: Store<fromArticleStore.ArticleState>,
+    public fromCategoryStore: Store<fromCategoryStore.CategoryState>
+  ) { }
 
   ngOnInit() {
+    this.fromCategoryStore.select(fromCategoryStore.getCategoriesLoaded)
+      .pipe(
+        tap(loaded => {
+          if (!loaded) {
+            this.store.dispatch(new fromCategoryStore.LoadCategory);
+          }
+        }),
+        filter(loaded => !loaded),
+        take(1)
+      ).subscribe();
+    // this.store.dispatch(new fromCategoryStore.LoadCategory);
+    this.categories$ = this.fromCategoryStore.select(fromCategoryStore.getCategories);
   }
 
   onSubmit() {
 
     let filename = '';
     if (this.selectedFiles != undefined) {
-      this.currentFileUpload = this.selectedFiles.item(0);      
-    }    
+      this.currentFileUpload = this.selectedFiles.item(0);
+    }
+    // console.log(this.model);
     this.store.dispatch(new fromArticleStore.CreateArticle({ article: this.model, buffer: this.currentFileUpload }));
   }
 

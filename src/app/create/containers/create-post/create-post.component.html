@@ -28,6 +28,20 @@
           <span class="d__desc">Please post slug.</span>
         </div>
         <div class="d">
+          <label class="d__label">Category</label>
+          <div class="select">
+            <select name="category" [(ngModel)]="model.category_id">
+              <!-- <option>First select</option>
+              <option>Option</option>
+              <option>Option</option> -->
+              <option [value]="null">Choose a state</option>
+              <option *ngFor="let category of (categories$ | async)" [value]="category.id">{{category.category}}</option>
+            </select>
+            <div class="select__arrow"></div>
+          </div>
+          <span class="d__desc">Please select category.</span>
+        </div>
+        <div class="d">
           <label class="d__label">Excerpt</label>
           <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description" [(ngModel)]="model.description"
             required #description="ngModel"></textarea>
