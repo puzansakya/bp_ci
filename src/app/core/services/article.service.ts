@@ -40,4 +40,10 @@ export class ArticleService {
       .post<Article>(`http://localhost:3000/api/v1/articles`, formdata)
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
+
+  bookmarkArticle(article:Article){
+    return this.http
+      .post<Article>(`http://localhost:3000/api/v1/articles/bookmark`, article)
+      .pipe(catchError((error: any) => Observable.throw(error.json())));
+  }
 }

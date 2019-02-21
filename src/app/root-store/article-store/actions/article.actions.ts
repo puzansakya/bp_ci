@@ -70,7 +70,9 @@ export const BOOKMARK_SUCCESS = '[Articles] Bookmark Success';
 
 export class Bookmark implements Action {
     readonly type = BOOKMARK;
-    constructor(public payload: Article) { }
+    constructor(public payload: Article) {
+        console.log('bookmark', payload);
+    }
 }
 
 export class BookmarkSuccess implements Action {

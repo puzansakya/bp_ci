@@ -276,26 +276,34 @@ export class ArticleController {
 
     public async bookmark(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req['user'];
+            if (!user) {
+                console.log('debug');
+                next({ status: 400, message: 'user not found' });
+            }
             if (req.body.bookmark) {
                 let bookmarkCreate = await Bookmark
                     .query()
                     .insert({
-                        user_id: req.body.user_id,
-                        article_id: req.body.article_id
+                        user_id: user.sub,
+                        article_id: req.body.id
                     }).debug(true);
                 res.status(201).json({ message: 'bookmarked' });
             } else {
-                let clapDelete = await Bookmark
+                console.log('req.body',req.body);
+                console.log('user',user);
+                let bookmarkDelete = await Bookmark
                     .query()
                     .delete()
                     .where({
-                        article_id: req.body.article_id,
-                        user_id: req.body.user_id
+                        article_id: req.body.id,
+                        user_id: user.sub
                     })
                     .debug(true);
                 res.status(201).json({ message: 'Bookmark removed' });
             }
         } catch (error) {
+            console.log('error', error);
             next({ status: 400, message: error });
 
         }
@@ -387,7 +395,7 @@ export class ArticleController {
         // this.router.put('/:id'              , this.update);
         // this.router.delete('/:id'           , this.delete);
         this.router.post('/clap', this.clap);
-        this.router.post('/bookmark', this.bookmark);
+        this.router.post('/bookmark', auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.bookmark);
         // this.router.get('/favs'             , this.getFavs);
         // this.router.post('/favs'            , this.favs);
         // this.router.get('/reviews/:hotelId' , this.getReviews);
@@ -405,3 +413,12 @@ export default new ArticleController().router;
 // LEFT JOIN `likes` on `likes`.`photo_id` = `photos`.`id` AND `likes`.`user_id` = 123
 // ORDER BY `photos`.`created_at` DESC
 // LIMIT 0,5
+
+
+// endpoints
+// (get) api/v1/articles/ -> get all articles
+// (post) api/v1/articles/ -> create and article
+// (get) api/v1/articles/{slug} -> get one article based on article slug
+// (post) api/v1/articles/clap -> create clap based on particular user id and article id
+// (post) api/v1/articles/bookmark -> create bookmark based on particular user id and article id
+// (get) api/v1/articles/bookmark -> get bookmarked articles for particular user id

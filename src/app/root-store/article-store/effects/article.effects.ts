@@ -68,4 +68,18 @@ export class ArticleEffects {
         })
     );
 
+    @Effect()
+    bookmarkArticle$ = this.actions$.pipe(
+        ofType(articleActions.BOOKMARK),
+        map((action: articleActions.Bookmark) => action.payload),
+        switchMap(payload => {
+            return this.articleService
+                .bookmarkArticle(payload)
+                .pipe(
+                    map(article => new articleActions.CreateArticleSuccess(article)),
+                    catchError(error => of(new articleActions.CreateArticleFail(error)))
+                );
+        })
+    );
+
 }
