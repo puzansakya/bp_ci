@@ -4,6 +4,8 @@ import Clap from "../models/Clap";
 import { upload } from "../middleware/Fileupload";
 const cloudinary = require('cloudinary').v2;
 
+import slugify from 'slugify';
+
 import * as _ from 'lodash';
 // const checkIfAuthenticated = require('../middlewares/Authentication.middleware').checkIfAuthenticated;
 import auth from '../middleware/Authentication.middleware';
@@ -178,11 +180,12 @@ export class ArticleController {
                         //     backdrop = 'http://localhost:3000/' + req.file.filename;
                         // }                        
                         try {
+                            let slug = slugify(req.body.heading, { remove: /[*+~.()'"!:@]/g, lower: true });
                             let articleCreate = await Article
                                 .query()
                                 .insert({
                                     heading: req.body.heading,
-                                    slug: req.body.slug,
+                                    slug: slug,
                                     description: req.body.description,
                                     content: req.body.content,
                                     backdrop: result.secure_url,
@@ -290,8 +293,8 @@ export class ArticleController {
                     }).debug(true);
                 res.status(201).json({ message: 'bookmarked' });
             } else {
-                console.log('req.body',req.body);
-                console.log('user',user);
+                console.log('req.body', req.body);
+                console.log('user', user);
                 let bookmarkDelete = await Bookmark
                     .query()
                     .delete()
