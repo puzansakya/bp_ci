@@ -30,6 +30,20 @@
  * 
  */
 
+  /**
+ * @swagger
+ * definitions:
+ *   Bookmark:
+ *     properties:
+ *       article_id:
+ *         type: number
+ *       user_id:
+ *         type: number
+ *       bookmark:
+ *         type: boolean 
+ * 
+ */
+
 /**
  * @swagger
  * /api/v1/articles:
@@ -160,4 +174,26 @@
  *     responses:
  *       201:
  *         description: claped
+ */
+
+
+ /**
+ * @swagger
+ * /api/v1/articles/bookmark:
+ *   post:
+ *     tags:
+ *       - Articles
+ *     description: bookmark an article
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: Article bookmark parameters
+ *         description: Bookmark object
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/Bookmark'
+ *     responses:
+ *       201:
+ *         description: bookmarked
  */

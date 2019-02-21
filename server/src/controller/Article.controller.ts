@@ -7,6 +7,7 @@ const cloudinary = require('cloudinary').v2;
 import * as _ from 'lodash';
 // const checkIfAuthenticated = require('../middlewares/Authentication.middleware').checkIfAuthenticated;
 import auth from '../middleware/Authentication.middleware';
+import Bookmark from "../models/Bookmark";
 // const checkIfAuthenticated = require('../middleware/Authentication.middleware').checkIfAuthenticated;
 // const checkIfAuthorized = require('../middleware/Authorization.middleware').checkIfAuthorized;
 
@@ -156,7 +157,7 @@ export class ArticleController {
                     api_secret: '--ZROy5RT31hr5SKQV4eQEw1VBQ'
                 });
 
-                const uniqueFilename = new Date().toISOString();                
+                const uniqueFilename = new Date().toISOString();
                 // cloudinary.uploader.upload(
                 //     './uploads/backdrop_1549692851279_1*lj9A6xVpbqmCWCIlPguOKw.png',
                 //     // dUri.content,
@@ -168,7 +169,7 @@ export class ArticleController {
                 //         console.log('file uploaded to Cloudinary')
                 //     }
                 // )
-                cloudinary.uploader.upload_stream({ public_id: `blog/${uniqueFilename}`, tags: `blog` }, async (error, result) => {                    
+                cloudinary.uploader.upload_stream({ public_id: `blog/${uniqueFilename}`, tags: `blog` }, async (error, result) => {
                     if (error) {
                         next({ status: 400, message: error });
                     } else {
@@ -273,6 +274,33 @@ export class ArticleController {
         }
     }
 
+    public async bookmark(req: Request, res: Response, next: NextFunction) {
+        try {
+            if (req.body.bookmark) {
+                let bookmarkCreate = await Bookmark
+                    .query()
+                    .insert({
+                        user_id: req.body.user_id,
+                        article_id: req.body.article_id
+                    }).debug(true);
+                res.status(201).json({ message: 'bookmarked' });
+            } else {
+                let clapDelete = await Bookmark
+                    .query()
+                    .delete()
+                    .where({
+                        article_id: req.body.article_id,
+                        user_id: req.body.user_id
+                    })
+                    .debug(true);
+                res.status(201).json({ message: 'Bookmark removed' });
+            }
+        } catch (error) {
+            next({ status: 400, message: error });
+
+        }
+    }
+
     // public async getFavs(req: Request, res: Response, next: NextFunction){
 
     // }
@@ -359,6 +387,7 @@ export class ArticleController {
         // this.router.put('/:id'              , this.update);
         // this.router.delete('/:id'           , this.delete);
         this.router.post('/clap', this.clap);
+        this.router.post('/bookmark', this.bookmark);
         // this.router.get('/favs'             , this.getFavs);
         // this.router.post('/favs'            , this.favs);
         // this.router.get('/reviews/:hotelId' , this.getReviews);
