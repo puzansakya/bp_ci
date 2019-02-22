@@ -42,3 +42,13 @@ export const getArticleLoaded = createSelector(
     fromArticles.getArticleLoaded
 );
 
+export const getArticleSuccess = createSelector(
+    getArticlesState,
+    fromArticles.getArticleSuccess
+);
+
+export const getArticleError = createSelector(
+    getArticlesState,
+    fromArticles.getArticleError
+);
+

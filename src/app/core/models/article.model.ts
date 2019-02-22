@@ -14,5 +14,5 @@ export interface Article {
     // author?: string;
     // avatar?: string;
     user?           : User;
-    category_id?    : number;
+    category_id?    : string;
 }

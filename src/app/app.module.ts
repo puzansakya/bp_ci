@@ -9,6 +9,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { TransferHttpCacheModule } from '@nguniversal/common';
 
+// toaster
+import { ToastrModule } from 'ngx-toastr';
+
 // services
 import * as fromServices from './core/services';
 
@@ -58,6 +61,12 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
     FormsModule,
     HttpClientModule,
     SharedModule,
+    ToastrModule.forRoot({
+      timeOut: 2000,
+      positionClass: 'toast-top-center',
+      closeButton: true,
+      preventDuplicates: true,
+    }),
     NgtUniversalModule,
     AuthModule,
     StoreModule.forRoot(reducers, { metaReducers }),

@@ -152,14 +152,39 @@ export class ArticleController {
             if (err) {
                 console.error(err)
                 return res.status(400).json({ message: "failed upload" })
-            } else {
-                cloudinary.config({
-                    cloud_name: 'dnammd7o9',
-                    api_key: '454537438423116',
-                    api_secret: '--ZROy5RT31hr5SKQV4eQEw1VBQ'
-                });
+            } else {                               
 
-                const uniqueFilename = new Date().toISOString();
+                // uncomment if file is writing to disk
+                let backdrop;
+                if (req.file != undefined) {
+                    backdrop = 'http://localhost:3000/' + req.file.filename;
+                }
+                try {
+                    let slug = slugify(req.body.heading, { remove: /[*+~.()'"!:@]/g, lower: true });
+                    let articleCreate = await Article
+                        .query()
+                        .insert({
+                            heading: req.body.heading,
+                            slug: slug,
+                            description: req.body.description,
+                            content: req.body.content,
+                            backdrop: backdrop,
+                            status: req.body.status,
+                            user_id: user.sub,
+                            category_id: req.body.category_id,
+                        }).debug(true);
+                    res.status(201).json(articleCreate);
+                } catch (error) {
+                    console.log(error);
+                    next({ status: 400, message: error });
+                }
+
+                // cloudiary support uncomment here
+                // cloudinary.config({
+                //     cloud_name: 'dnammd7o9',
+                //     api_key: '454537438423116',
+                //     api_secret: '--ZROy5RT31hr5SKQV4eQEw1VBQ'
+                // });
                 // cloudinary.uploader.upload(
                 //     './uploads/backdrop_1549692851279_1*lj9A6xVpbqmCWCIlPguOKw.png',
                 //     // dUri.content,
@@ -171,35 +196,35 @@ export class ArticleController {
                 //         console.log('file uploaded to Cloudinary')
                 //     }
                 // )
-                cloudinary.uploader.upload_stream({ public_id: `blog/${uniqueFilename}`, tags: `blog` }, async (error, result) => {
-                    if (error) {
-                        next({ status: 400, message: error });
-                    } else {
-                        // uncomment if file is writing to disk
-                        // if (req.file != undefined) {
-                        //     backdrop = 'http://localhost:3000/' + req.file.filename;
-                        // }                        
-                        try {
-                            let slug = slugify(req.body.heading, { remove: /[*+~.()'"!:@]/g, lower: true });
-                            let articleCreate = await Article
-                                .query()
-                                .insert({
-                                    heading: req.body.heading,
-                                    slug: slug,
-                                    description: req.body.description,
-                                    content: req.body.content,
-                                    backdrop: result.secure_url,
-                                    status: req.body.status,
-                                    user_id: user.sub,
-                                    category_id: req.body.category_id,
-                                }).debug(true);
-                            res.status(201).json(articleCreate);
-                        } catch (error) {
-                            next({ status: 400, message: error });
-                        }
-                    }
+                // cloudinary.uploader.upload_stream({ public_id: `blog/${uniqueFilename}`, tags: `blog` }, async (error, result) => {
+                //     if (error) {
+                //         next({ status: 400, message: error });
+                //     } else {
+                //         // uncomment if file is writing to disk
+                //         // if (req.file != undefined) {
+                //         //     backdrop = 'http://localhost:3000/' + req.file.filename;
+                //         // }                        
+                //         try {
+                //             let slug = slugify(req.body.heading, { remove: /[*+~.()'"!:@]/g, lower: true });
+                //             let articleCreate = await Article
+                //                 .query()
+                //                 .insert({
+                //                     heading: req.body.heading,
+                //                     slug: slug,
+                //                     description: req.body.description,
+                //                     content: req.body.content,
+                //                     backdrop: result.secure_url,
+                //                     status: req.body.status,
+                //                     user_id: user.sub,
+                //                     category_id: req.body.category_id,
+                //                 }).debug(true);
+                //             res.status(201).json(articleCreate);
+                //         } catch (error) {
+                //             next({ status: 400, message: error });
+                //         }
+                //     }
 
-                }).end(req.file.buffer);
+                // }).end(req.file.buffer);
             }
         });
     }

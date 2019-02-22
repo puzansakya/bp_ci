@@ -16,12 +16,14 @@ import {
 
 import * as articleActions from '../actions/article.actions';
 import * as fromServices from '../../../core/services';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class ArticleEffects {
     constructor(
         private actions$: Actions,
-        private articleService: fromServices.ArticleService
+        private articleService: fromServices.ArticleService,
+        private toastr: ToastrService
     ) { }
 
     @Effect()
@@ -62,8 +64,14 @@ export class ArticleEffects {
             return this.articleService
                 .createArticle(payload)
                 .pipe(
-                    map(article => new articleActions.CreateArticleSuccess(article)),
-                    catchError(error => of(new articleActions.CreateArticleFail(error)))
+                    map(article => {
+                        this.toastr.success('Article created!');
+                        return new articleActions.CreateArticleSuccess(article);
+                    }),
+                    catchError(error => {
+                        this.toastr.error('Article creation failed!');
+                        return of(new articleActions.CreateArticleFail(error))
+                    })
                 );
         })
     );

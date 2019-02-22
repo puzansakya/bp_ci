@@ -1133,3 +1133,11 @@ virtual-scroller {
 .dropdown-toggle::after {
     display: none;
 }
+
+pre {
+    color: #ccc;
+    background: #262222;
+    padding: 10px;
+    box-shadow: 0 20px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+}
