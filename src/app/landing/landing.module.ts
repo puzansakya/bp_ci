@@ -25,7 +25,7 @@ import { ArticleStoreModule } from '../root-store/article-store/article-store.mo
 export const ROUTES: Routes = [
   {
     path: '',
-    canActivate: [fromGuards.ArticleCollectionGuard],
+    // canActivate: [fromGuards.ArticleCollectionGuard],
     component: fromContainers.LandingComponent,
   }
 ];
