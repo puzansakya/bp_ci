@@ -3,7 +3,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Store } from '@ngrx/store';
 import { Subject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import * as fromStore from '../../../root-store/article-store';
 import { Article } from '../../../core/models/article.model';
@@ -19,17 +18,12 @@ export class ArticleComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
 
 
-  constructor(private store: Store<fromStore.ArticleState>) { }
+  constructor(
+    private store: Store<fromStore.ArticleState>,    
+  ) { }
 
-  ngOnInit() {
-    // this.store.dispatch(new fromStore.LoadArticle('an-unforgettable-valentines-day-18'));
-    this.article$ = this.store.select(fromStore.getArticle);
-    //   .pipe(
-    //     takeUntil(this._destroyed$),
-    // ).subscribe(data => {
-    //   this.article = data;
-    //   console.log(data);
-    // });
+  ngOnInit() {    
+    this.article$ = this.store.select(fromStore.getArticle);      
   }
 
   ngOnDestroy(): void {

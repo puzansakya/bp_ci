@@ -26,7 +26,7 @@ export class ArticleEffects {
 
     @Effect()
     loadArticles$ = ({ debounce = 3000, scheduler = asyncScheduler } = {}): Observable<Action> => this.actions$.pipe(
-        debounceTime(debounce, scheduler),
+        // debounceTime(debounce, scheduler),
         ofType(articleActions.LOAD_ARTICLES),
         map((action: articleActions.LoadArticles) => action.payload),
         switchMap((page: number) => {
