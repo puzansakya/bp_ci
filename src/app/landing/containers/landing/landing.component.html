@@ -226,6 +226,7 @@
 
         <div class="home__container">
             <div class="home__container--wrapper">
+                <!-- [scrollThrottlingTime]="200" -->
                 <virtual-scroller #scroll [parentScroll]="scroll.window" [items]="articles$ | async" detect-scroll (onScroll)="handleScroll($event)"
                     [bottomOffset]="0" [topOffset]="200">
                     <div class="flex__wrapper--item " *ngFor="let item of scroll.viewPortItems">
