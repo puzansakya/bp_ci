@@ -5,9 +5,13 @@ import { Routes, RouterModule } from '@angular/router';
 // containers
 import * as fromContainers from './containers';
 
+// containers
+import * as fromComponents from './components';
+
 // guards
 import * as fromGuards from './guards';
 import { ArticleStoreModule } from '../root-store/article-store/article-store.module';
+
 
 // routes
 export const ROUTES: Routes = [
@@ -25,7 +29,7 @@ export const ROUTES: Routes = [
     ArticleStoreModule
   ],
   providers: [],
-  declarations: [...fromContainers.containers],
-  exports: [...fromContainers.containers],
+  declarations: [...fromContainers.containers, ...fromComponents.components],
+  exports: [...fromContainers.containers, ...fromComponents.components],
 })
 export class AuthorModule { }
