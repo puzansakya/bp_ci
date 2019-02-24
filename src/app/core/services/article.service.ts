@@ -17,6 +17,12 @@ export class ArticleService {
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
+  getArticlesByAuthor(authorId: number): Observable<Articles> {
+    return this.http
+      .get<Articles>(`http://localhost:3000/api/v1/articles/author/${authorId}`)
+      .pipe(catchError((error: any) => Observable.throw(error.json())));
+  }
+
   getArticle(slug: string): Observable<Article> {
     return this.http
       .get<Article>(`http://localhost:3000/api/v1/articles/${slug}`)

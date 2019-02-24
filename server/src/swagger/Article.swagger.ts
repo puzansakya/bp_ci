@@ -98,6 +98,42 @@
  *           $ref: '#/definitions/Article'
  */
 
+ /**
+ * @swagger
+ * /api/v1/articles/author/{authorId}:
+ *   get:
+ *     tags:
+ *       - Articles
+ *     description: Returns all articles for particular author
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: search
+ *         description: Article's heading
+ *         in: query
+ *         required: false
+ *         type: string
+ *       - name: sort
+ *         description: Sort column
+ *         in: query
+ *         required: false
+ *         type: string
+ *       - name: order
+ *         description: Sort type (asc | desc)
+ *         in: query
+ *         required: false
+ *         type: string
+ *       - name: authorId
+ *         description: Author's id
+ *         in: path
+ *         required: true
+ *         type: number
+ *     responses:
+ *       200:
+ *         description: An array of articles for particular author
+ *         schema:
+ *           $ref: '#/definitions/Article'
+ */
 
 /**
  * @swagger

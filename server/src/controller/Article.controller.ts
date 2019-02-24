@@ -143,6 +143,73 @@ export class ArticleController {
 
     }
 
+    public async getByAuthor(req: Request, res: Response, next: NextFunction) {
+
+        try {
+            //parse search parameter
+            let search = req.query.search;
+            let order = req.query.order;
+            let sort = req.query.sort;
+
+            let pageNo = parseInt(req.query.page, 10);
+
+            if (isNaN(pageNo) || pageNo < 1) {
+                pageNo = 1;
+            }
+
+            let limit = parseInt(req.query.limit, 10);
+
+            if (isNaN(limit)) {
+                limit = 10;
+            } else if (limit > 50) {
+                limit = 50;
+            } else if (limit < 1) {
+                limit = 1;
+            }
+
+            let offset = pageNo - 1;
+
+            let query = Article
+                .query();
+
+            if (search != undefined) {
+                query.where('name', 'like', '%' + search + '%');
+            }
+
+            if (sort != undefined) {
+                if (order != undefined) {
+                    query.orderBy(sort, order);
+                }
+
+            }
+
+            // const user = req['user'];
+            // if(user){
+
+            // }
+            let articles = await query
+                .eager('user')
+                .where({ status: true , user_id:req.params.authorId })
+                .page(offset, limit)
+                .debug(true);
+
+            let response = {
+                data: articles.results,
+                paged: {
+                    page: pageNo,
+                    pageSize: limit,
+                    rowCount: articles.total,
+                    pageCount: Math.ceil(articles.total / limit)
+                }
+            };
+
+            res.status(200).json(response);
+        } catch (error) {
+            next({ status: 400, message: error });
+        }
+
+    }
+
     public async create(req: Request, res: Response, next: NextFunction) {
         const user = req['user'];
         if (!user) {
@@ -152,7 +219,7 @@ export class ArticleController {
             if (err) {
                 console.error(err)
                 return res.status(400).json({ message: "failed upload" })
-            } else {                               
+            } else {
 
                 // uncomment if file is writing to disk
                 let backdrop;
@@ -419,6 +486,7 @@ export class ArticleController {
         this.router.get('/', this.getAll);
         this.router.post('/', auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.create);
         this.router.get('/:slug', this.getBySlug);
+        this.router.get('/author/:authorId', this.getByAuthor);
         // this.router.get('/:id'              , this.getOne);
         // this.router.put('/:id'              , this.update);
         // this.router.delete('/:id'           , this.delete);

@@ -42,6 +42,21 @@ export class ArticleEffects {
     );
 
     @Effect()
+    loadAuthorArticles$ = ({ debounce = 3000, scheduler = asyncScheduler } = {}): Observable<Action> => this.actions$.pipe(
+        // debounceTime(debounce, scheduler),
+        ofType(articleActions.LOAD_AUTHOR_ARTICLES),
+        map((action: articleActions.LoadArticles) => action.payload),
+        switchMap((authorId: number) => {
+            return this.articleService
+                .getArticlesByAuthor(authorId)
+                .pipe(
+                    map(articles => new articleActions.LoadAuthorArticlesSuccess(articles)),
+                    catchError(error => of(new articleActions.LoadAuthorArticlesFail(error)))
+                );
+        })
+    );
+
+    @Effect()
     loadArticle$ = this.actions$.pipe(
         // debounceTime(debounce, scheduler),
         ofType(articleActions.LOAD_ARTICLE),

@@ -19,16 +19,16 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private store: Store<fromStore.ArticleState>,    
+    private store: Store<fromStore.ArticleState>,
   ) { }
 
-  ngOnInit() {    
-    this.article$ = this.store.select(fromStore.getArticle);      
+  ngOnInit() {
+    this.article$ = this.store.select(fromStore.getArticle);
   }
 
   ngOnDestroy(): void {
     this._destroyed$.next();
-    this._destroyed$.complete();
+    this._destroyed$.complete();    
   }
 
 

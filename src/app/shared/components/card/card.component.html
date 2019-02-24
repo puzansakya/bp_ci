@@ -20,7 +20,7 @@
         </span>
         <span class="author-meta">
           <span class="post-name">
-            <a href="author.html">{{article.user.username}}</a>
+            <a [routerLink]="['/authors', article.user.id]">{{article.user.username}}</a>
           </span>
           <br/>
           <span class="post-date">22 July 2017</span>

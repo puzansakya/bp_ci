@@ -5,10 +5,15 @@ import { Routes, RouterModule } from '@angular/router';
 // containers
 import * as fromContainers from './containers';
 
+// guards
+import * as fromGuards from './guards';
+import { ArticleStoreModule } from '../root-store/article-store/article-store.module';
+
 // routes
 export const ROUTES: Routes = [
   {
-    path: '',
+    path: ':authorId',
+    canActivate: [fromGuards.AuthorExistsGuard],
     component: fromContainers.AuthorComponent,
   }
 ];
@@ -17,6 +22,7 @@ export const ROUTES: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(ROUTES),
+    ArticleStoreModule
   ],
   providers: [],
   declarations: [...fromContainers.containers],
