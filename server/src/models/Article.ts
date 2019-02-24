@@ -14,6 +14,7 @@ export default class Article extends Model {
     modified_date: Date;
     status: boolean;
     user_id: number;
+    category_id: number;
 
     static get tableName() {
         return 'articles';

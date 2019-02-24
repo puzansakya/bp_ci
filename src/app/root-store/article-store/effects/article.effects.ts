@@ -16,12 +16,14 @@ import {
 
 import * as articleActions from '../actions/article.actions';
 import * as fromServices from '../../../core/services';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class ArticleEffects {
     constructor(
         private actions$: Actions,
-        private articleService: fromServices.ArticleService
+        private articleService: fromServices.ArticleService,
+        private toastr: ToastrService
     ) { }
 
     @Effect()
@@ -40,11 +42,26 @@ export class ArticleEffects {
     );
 
     @Effect()
+    loadAuthorArticles$ = ({ debounce = 3000, scheduler = asyncScheduler } = {}): Observable<Action> => this.actions$.pipe(
+        // debounceTime(debounce, scheduler),
+        ofType(articleActions.LOAD_AUTHOR_ARTICLES),
+        map((action: articleActions.LoadArticles) => action.payload),
+        switchMap((authorId: number) => {
+            return this.articleService
+                .getArticlesByAuthor(authorId)
+                .pipe(
+                    map(articles => new articleActions.LoadAuthorArticlesSuccess(articles)),
+                    catchError(error => of(new articleActions.LoadAuthorArticlesFail(error)))
+                );
+        })
+    );
+
+    @Effect()
     loadArticle$ = this.actions$.pipe(
         // debounceTime(debounce, scheduler),
         ofType(articleActions.LOAD_ARTICLE),
         map((action: articleActions.LoadArticle) => action.payload),
-        switchMap((slug: string) => {            
+        switchMap((slug: string) => {
             return this.articleService
                 .getArticle(slug)
                 .pipe(
@@ -61,6 +78,26 @@ export class ArticleEffects {
         switchMap(payload => {
             return this.articleService
                 .createArticle(payload)
+                .pipe(
+                    map(article => {
+                        this.toastr.success('Article created!');
+                        return new articleActions.CreateArticleSuccess(article);
+                    }),
+                    catchError(error => {
+                        this.toastr.error('Article creation failed!');
+                        return of(new articleActions.CreateArticleFail(error))
+                    })
+                );
+        })
+    );
+
+    @Effect()
+    bookmarkArticle$ = this.actions$.pipe(
+        ofType(articleActions.BOOKMARK),
+        map((action: articleActions.Bookmark) => action.payload),
+        switchMap(payload => {
+            return this.articleService
+                .bookmarkArticle(payload)
                 .pipe(
                     map(article => new articleActions.CreateArticleSuccess(article)),
                     catchError(error => of(new articleActions.CreateArticleFail(error)))

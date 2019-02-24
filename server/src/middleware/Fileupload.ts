@@ -7,14 +7,14 @@ import * as multer from 'multer';
 //     destination: function (req, file, callback) {
 //         callback(null, './uploads/');
 //     },
-//     filename: function (req, file, callback) {        
+//     filename: function (req, file, callback) {
 //         callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
 //     }
 // });
 
 /**
- * write file to disk
+ * write file to buffer
  */
 const Storage = multer.memoryStorage();
+
 export const upload = multer({ storage: Storage }).single("backdrop"); //Field name and max count
-// export const dataUri = req => dUri.format(path.extname(req.file.originalname).toString(), req.file.buffer);

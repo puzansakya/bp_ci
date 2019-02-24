@@ -3,8 +3,8 @@
 @import '~quill/dist/quill.core.css';
 @import '~quill/dist/quill.bubble.css';
 @import '~quill/dist/quill.snow.css';
-
-
+// regular style toast
+@import '~ngx-toastr/toastr.css';
 .demo-header {
     align-items: center;
     background: #0273d4;
@@ -13,6 +13,7 @@
     display: flex;
     padding: 1em;
 }
+
 .demo-header__toggle {
     background: transparent;
     border: 0.15rem solid #fff;
@@ -35,6 +36,7 @@
         width: 100%;
     }
 }
+
 .demo-sidebar {
     background-color: #fff;
     z-index: 4 !important;
@@ -44,9 +46,11 @@
         box-shadow: 0 0 2.5em rgba(85, 85, 85, 0.5);
     }
 }
+
 .demo-contents {
     padding: 0 2em;
 }
+
 .demo-control {
     background-color: #f6f6f6;
     border: 1px solid #545555;

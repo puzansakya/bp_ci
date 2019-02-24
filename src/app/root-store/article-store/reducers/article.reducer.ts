@@ -36,15 +36,17 @@ export const featureAdapter: EntityAdapter<Article> = createEntityAdapter<Articl
 
 export interface ArticleState extends EntityState<Article> {
     entities: { [id: number]: Article };
-    entity: Article;
+    entity: Article;    
     paged: paged;
     loading: boolean;
     loaded: boolean;
+    success: string;
+    error: string;
 }
 
 export const initialState: ArticleState = featureAdapter.getInitialState({
     entities: {},
-    entity: null,
+    entity: null,    
     paged: {
         page: 0,
         pageSize: 0,
@@ -53,6 +55,8 @@ export const initialState: ArticleState = featureAdapter.getInitialState({
     },
     loading: false,
     loaded: false,
+    success: '',
+    error: '',
 });
 
 
@@ -67,7 +71,6 @@ export function reducer(
                 loading: true,
             };
         }
-
         case fromArticle.LOAD_ARTICLES_SUCCESS: {
             const articles = action.payload;
             const paged = articles.paged;
@@ -97,7 +100,6 @@ export function reducer(
                 paged
             });
         }
-
         case fromArticle.LOAD_ARTICLES_FAIL: {
             return {
                 ...state,
@@ -105,29 +107,50 @@ export function reducer(
                 loaded: false,
             };
         }
-
+        case fromArticle.LOAD_AUTHOR_ARTICLES: {
+            return {
+                ...state,
+                loading: true,
+            };
+        }
+        case fromArticle.LOAD_AUTHOR_ARTICLES_SUCCESS: {
+            const articles = action.payload;
+            const paged = articles.paged;
+            return featureAdapter.addAll(articles.data, {
+                ...state,
+                loading: false,
+                loaded: true,
+                paged
+            });
+        }
+        case fromArticle.LOAD_ARTICLES_FAIL: {
+            return {
+                ...state,
+                loading: false,
+                loaded: false,
+            };
+        }
         case fromArticle.LOAD_ARTICLE: {
             return {
                 ...state,
                 loading: true,
             };
         }
-
         case fromArticle.LOAD_ARTICLE_SUCCESS: {
             const article = action.payload;
 
             return {
                 ...state,
-                loading: false,
+                loading: true,
                 entity: article,
                 loaded: true
             };
         }
-
         case fromArticle.LOAD_ARTICLE_FAIL: {
             return {
                 ...state,
                 loading: false,
+                error: action.payload,
                 entity: {}
             };
         }
@@ -140,6 +163,7 @@ export function reducer(
 
             return {
                 ...state,
+                success: 'Article created!',
                 entities,
             };
         }
@@ -154,6 +178,17 @@ export function reducer(
                 },
             };
         }
+        case fromArticle.RESET: {
+
+            return featureAdapter.removeAll({
+                ...state
+            })
+
+            // return {
+            //     ...state,
+            //     entities: {},
+            // };
+        }
     }
 
     return state;
@@ -164,3 +199,5 @@ export const getArticleEntity = (state: ArticleState) => state.entity;
 export const getArticlePaged = (state: ArticleState) => state.paged;
 export const getArticleLoading = (state: ArticleState) => state.loading;
 export const getArticleLoaded = (state: ArticleState) => state.loaded;
+export const getArticleSuccess = (state: ArticleState) => state.success;
+export const getArticleError = (state: ArticleState) => state.error;

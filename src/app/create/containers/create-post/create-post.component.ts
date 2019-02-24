@@ -4,7 +4,10 @@ import { Article } from '../../../core/models/article.model';
 // store
 import { Store } from '@ngrx/store';
 import * as fromArticleStore from './../../../root-store/article-store';
-
+import * as fromCategoryStore from '../../../root-store/category-store';
+import { tap, take, filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { Category } from '../../../core/models/category.model';
 
 @Component({
   selector: 'app-create-post',
@@ -13,24 +16,46 @@ import * as fromArticleStore from './../../../root-store/article-store';
 })
 export class CreatePostComponent implements OnInit {
 
+
+  // observables
+  success$: Observable<string>;
+  categories$: Observable<Category[]>;
+
   // fileupload variables
   selectedFiles: FileList;
   currentFileUpload: File = null;
   url: string = "http://i.pravatar.cc/500?img=7";
 
-  model: Article = {};
-  constructor(public store: Store<fromArticleStore.ArticleState>) { }
+  model: Article = {
+    category_id: null,
+  };
+  constructor(
+    public fromArticleStore: Store<fromArticleStore.ArticleState>,
+    public fromCategoryStore: Store<fromCategoryStore.CategoryState>
+  ) { }
 
   ngOnInit() {
+    this.fromCategoryStore.select(fromCategoryStore.getCategoriesLoaded)
+      .pipe(
+        tap(loaded => {
+          if (!loaded) {
+            this.fromCategoryStore.dispatch(new fromCategoryStore.LoadCategory);
+          }
+        }),
+        filter(loaded => !loaded),
+        take(1)
+      ).subscribe();
+
+    this.categories$ = this.fromCategoryStore.select(fromCategoryStore.getCategories);
   }
 
   onSubmit() {
 
     let filename = '';
     if (this.selectedFiles != undefined) {
-      this.currentFileUpload = this.selectedFiles.item(0);      
-    }    
-    this.store.dispatch(new fromArticleStore.CreateArticle({ article: this.model, buffer: this.currentFileUpload }));
+      this.currentFileUpload = this.selectedFiles.item(0);
+    }
+    this.fromArticleStore.dispatch(new fromArticleStore.CreateArticle({ article: this.model, buffer: this.currentFileUpload }));
   }
 
   selectFile(event) {

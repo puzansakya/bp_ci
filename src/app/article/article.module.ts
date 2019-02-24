@@ -5,10 +5,12 @@ import { Routes, RouterModule } from '@angular/router';
 // containers
 import * as fromContainers from './containers';
 
-
 // guards
 import * as fromGuards from './guards';
+
+// stores
 import { ArticleStoreModule } from '../root-store/article-store/article-store.module';
+import { AuthStoreModule } from '../root-store/auth-store/auth-store.module';
 
 // routes
 export const ROUTES: Routes = [
@@ -23,7 +25,8 @@ export const ROUTES: Routes = [
     imports: [
         CommonModule,
         RouterModule.forChild(ROUTES),
-        ArticleStoreModule
+        ArticleStoreModule,
+        AuthStoreModule
     ],
     providers: [...fromGuards.guards],
     declarations: [...fromContainers.containers],

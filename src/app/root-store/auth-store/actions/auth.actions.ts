@@ -34,7 +34,7 @@ export class Authenticated implements Action {
 export class AuthenticatedSuccess implements Action {
     readonly type = AuthActionTypes.AUTHENTICATED_SUCCESS;
     // constructor(public payload: boolean) { }
-    constructor(public payload: User) { }
+    constructor(public payload: { authenticated: boolean, user: User }) { }
 }
 
 /**

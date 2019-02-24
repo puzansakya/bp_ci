@@ -30,6 +30,20 @@
  * 
  */
 
+  /**
+ * @swagger
+ * definitions:
+ *   Bookmark:
+ *     properties:
+ *       article_id:
+ *         type: number
+ *       user_id:
+ *         type: number
+ *       bookmark:
+ *         type: boolean 
+ * 
+ */
+
 /**
  * @swagger
  * /api/v1/articles:
@@ -84,6 +98,42 @@
  *           $ref: '#/definitions/Article'
  */
 
+ /**
+ * @swagger
+ * /api/v1/articles/author/{authorId}:
+ *   get:
+ *     tags:
+ *       - Articles
+ *     description: Returns all articles for particular author
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: search
+ *         description: Article's heading
+ *         in: query
+ *         required: false
+ *         type: string
+ *       - name: sort
+ *         description: Sort column
+ *         in: query
+ *         required: false
+ *         type: string
+ *       - name: order
+ *         description: Sort type (asc | desc)
+ *         in: query
+ *         required: false
+ *         type: string
+ *       - name: authorId
+ *         description: Author's id
+ *         in: path
+ *         required: true
+ *         type: number
+ *     responses:
+ *       200:
+ *         description: An array of articles for particular author
+ *         schema:
+ *           $ref: '#/definitions/Article'
+ */
 
 /**
  * @swagger
@@ -103,6 +153,11 @@
  *         description: Article's heading
  *         required: true
  *         type: string
+ *       - name: category_id
+ *         in: formData
+ *         description: Category's id
+ *         required: true
+ *         type: number
  *       - name: slug
  *         in: formData
  *         description: Article's slug
@@ -155,4 +210,26 @@
  *     responses:
  *       201:
  *         description: claped
+ */
+
+
+ /**
+ * @swagger
+ * /api/v1/articles/bookmark:
+ *   post:
+ *     tags:
+ *       - Articles
+ *     description: bookmark an article
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: Article bookmark parameters
+ *         description: Bookmark object
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/Bookmark'
+ *     responses:
+ *       201:
+ *         description: bookmarked
  */

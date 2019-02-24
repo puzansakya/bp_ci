@@ -9,6 +9,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { TransferHttpCacheModule } from '@nguniversal/common';
 
+// toaster
+import { ToastrModule } from 'ngx-toastr';
+
 // services
 import * as fromServices from './core/services';
 
@@ -32,13 +35,15 @@ import { reducers, effects, CustomSerializer } from "./root-store/router-store";
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { storeFreeze } from 'ngrx-store-freeze';
 import { NgtUniversalModule } from '@ng-toolkit/universal';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 
 // this would be done dynamically with webpack for builds
-const environment = {
-  development: true,
-  production: false,
-};
+// const environment = {
+//   development: true,
+//   production: false,
+// };
 
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -56,12 +61,19 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
     FormsModule,
     HttpClientModule,
     SharedModule,
+    ToastrModule.forRoot({
+      timeOut: 2000,
+      positionClass: 'toast-top-center',
+      closeButton: true,
+      preventDuplicates: true,
+    }),
     NgtUniversalModule,
     AuthModule,
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule,
-    environment.development ? StoreDevtoolsModule.instrument() : [],
+    environment.production ? [] : StoreDevtoolsModule.instrument(),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [{ provide: RouterStateSerializer, useClass: CustomSerializer }, ...fromServices.services],
   bootstrap: [AppComponent]

@@ -22,6 +22,26 @@ export class LoadArticlesFail implements Action {
     constructor(public payload: any) { }
 }
 
+// load article collection
+export const LOAD_AUTHOR_ARTICLES = '[Articles] Load Author Articles';
+export const LOAD_AUTHOR_ARTICLES_SUCCESS = '[Articles] Load Author Articles Success';
+export const LOAD_AUTHOR_ARTICLES_FAIL = '[Articles] Load Author Articles Fail';
+
+export class LoadAuthorArticles implements Action {
+    readonly type = LOAD_AUTHOR_ARTICLES;
+    constructor(public payload: number) { }
+}
+
+export class LoadAuthorArticlesSuccess implements Action {
+    readonly type = LOAD_AUTHOR_ARTICLES_SUCCESS;
+    constructor(public payload: Articles) { }
+}
+
+export class LoadAuthorArticlesFail implements Action {
+    readonly type = LOAD_AUTHOR_ARTICLES_FAIL;
+    constructor(public payload: any) { }
+}
+
 // load single article
 export const LOAD_ARTICLE = '[Articles] Load Article';
 export const LOAD_ARTICLE_SUCCESS = '[Articles] Load Article Success';
@@ -70,7 +90,9 @@ export const BOOKMARK_SUCCESS = '[Articles] Bookmark Success';
 
 export class Bookmark implements Action {
     readonly type = BOOKMARK;
-    constructor(public payload: Article) { }
+    constructor(public payload: Article) {
+        console.log('bookmark', payload);
+    }
 }
 
 export class BookmarkSuccess implements Action {
@@ -83,11 +105,19 @@ export class BookmarkFail implements Action {
     constructor(public payload: any) { }
 }
 
+// reset article store
+export const RESET = '[Articles] Reset';
 
+export class Reset implements Action {
+    readonly type = RESET;
+    constructor() { }
+}
 
 // action types
 export type ArticleAction =
     | LoadArticle | LoadArticleFail | LoadArticleSuccess
     | LoadArticles | LoadArticlesSuccess | LoadArticlesFail
     | CreateArticle | CreateArticleSuccess | CreateArticleFail
-    | Bookmark | BookmarkSuccess | BookmarkFail;
+    | Bookmark | BookmarkSuccess | BookmarkFail
+    | LoadAuthorArticles | LoadAuthorArticlesSuccess | LoadAuthorArticlesFail
+    | Reset;

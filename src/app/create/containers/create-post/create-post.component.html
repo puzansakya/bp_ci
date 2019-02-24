@@ -22,10 +22,24 @@
             <img #imagePreview class="avatar-preview" src="{{url}}" alt="">
           </div>
         </div>
-        <div class="d">
+        <!-- <div class="d">
           <label class="d__label">Slug</label>
           <input class="form-control" type="text" name="slug" [(ngModel)]="model.slug" required #slug="ngModel">
           <span class="d__desc">Please post slug.</span>
+        </div> -->
+        <div class="d">
+          <label class="d__label">Category</label>
+          <div class="select">
+            <select name="category" [(ngModel)]="model.category_id">
+              <!-- <option>First select</option>
+              <option>Option</option>
+              <option>Option</option> -->
+              <option [value]="null">Choose a state</option>
+              <option *ngFor="let category of (categories$ | async)" [value]="category.id">{{category.category}}</option>
+            </select>
+            <div class="select__arrow"></div>
+          </div>
+          <span class="d__desc">Please select category.</span>
         </div>
         <div class="d">
           <label class="d__label">Excerpt</label>
@@ -64,7 +78,7 @@
             <input type="text" id="inp" placeholder="Untitled" name="heading" [(ngModel)]="model.heading" required #heading="ngModel">
             <span class="border"></span>
           </label>
-        </div>
+        </div>        
         <quill-editor theme="bubble" name="content" [(ngModel)]="model.content" required #content="ngModel"></quill-editor>
       </div>
 
