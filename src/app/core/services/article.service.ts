@@ -13,19 +13,19 @@ export class ArticleService {
 
   getArticles(page: number): Observable<Articles> {
     return this.http
-      .get<Articles>(`http://medium-puzan.herokuapp.com/api/v1/articles?page=${page}&limit=12&sort=id&order=desc`)
+      .get<Articles>(`https://medium-puzan.herokuapp.com/api/v1/articles?page=${page}&limit=12&sort=id&order=desc`)
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
   getArticlesByAuthor(authorId: number): Observable<Articles> {
     return this.http
-      .get<Articles>(`http://medium-puzan.herokuapp.com/api/v1/articles/author/${authorId}`)
+      .get<Articles>(`https://medium-puzan.herokuapp.com/api/v1/articles/author/${authorId}`)
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
   getArticle(slug: string): Observable<Article> {
     return this.http
-      .get<Article>(`http://medium-puzan.herokuapp.com/api/v1/articles/${slug}`)
+      .get<Article>(`https://medium-puzan.herokuapp.com/api/v1/articles/${slug}`)
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
@@ -44,13 +44,13 @@ export class ArticleService {
     formdata.append('content', payload.article.content);
 
     return this.http
-      .post<Article>(`http://medium-puzan.herokuapp.com/api/v1/articles`, formdata)
+      .post<Article>(`https://medium-puzan.herokuapp.com/api/v1/articles`, formdata)
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
   bookmarkArticle(article:Article){
     return this.http
-      .post<Article>(`http://medium-puzan.herokuapp.com/api/v1/articles/bookmark`, article)
+      .post<Article>(`https://medium-puzan.herokuapp.com/api/v1/articles/bookmark`, article)
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 }
