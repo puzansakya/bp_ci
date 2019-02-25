@@ -23,13 +23,20 @@ export class ArticleService {
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
+  getBookmarkedArticles(authorId: number): Observable<Articles> {
+    console.log('service called');
+    return this.http
+      .get<Articles>(`http://localhost:3000/api/v1/articles/bookmark/${authorId}`)
+      .pipe(catchError((error: any) => Observable.throw(error.json())));
+  }
+
   getArticle(slug: string): Observable<Article> {
     return this.http
       .get<Article>(`https://medium-puzan.herokuapp.com/api/v1/articles/${slug}`)
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
-  createArticle(payload: { article: Article, buffer: File }): Observable<Article> {    
+  createArticle(payload: { article: Article, buffer: File }): Observable<Article> {
     let formdata: FormData = new FormData();
 
     if (payload.buffer != null) {
@@ -48,7 +55,7 @@ export class ArticleService {
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
-  bookmarkArticle(article:Article){
+  bookmarkArticle(article: Article) {
     return this.http
       .post<Article>(`https://medium-puzan.herokuapp.com/api/v1/articles/bookmark`, article)
       .pipe(catchError((error: any) => Observable.throw(error.json())));

@@ -3,6 +3,7 @@ import Article from "../models/Article";
 import Clap from "../models/Clap";
 import { upload } from "../middleware/Fileupload";
 const cloudinary = require('cloudinary').v2;
+import { raw } from "objection";
 
 import slugify from 'slugify';
 
@@ -210,6 +211,82 @@ export class ArticleController {
 
     }
 
+    public async getBookmarkedArticle(req: Request, res: Response, next: NextFunction) {
+
+        try {
+            //parse search parameter
+            let search = req.query.search;
+            let order = req.query.order;
+            let sort = req.query.sort;
+            let authorId = req.params.authorId;
+
+            let pageNo = parseInt(req.query.page, 10);
+
+            if (isNaN(pageNo) || pageNo < 1) {
+                pageNo = 1;
+            }
+
+            let limit = parseInt(req.query.limit, 10);
+
+            if (isNaN(limit)) {
+                limit = 10;
+            } else if (limit > 50) {
+                limit = 50;
+            } else if (limit < 1) {
+                limit = 1;
+            }
+
+            let offset = pageNo - 1;
+
+            let query = Article
+                .query();
+
+            if (search != undefined) {
+                query.where('name', 'like', '%' + search + '%');
+            }
+
+            if (sort != undefined) {
+                if (order != undefined) {
+                    query.orderBy(sort, order);
+                }
+
+            }
+
+            // const user = req['user'];
+            // if(user){
+
+            // }
+            let articles = await query
+                .select(
+                    'articles.*',
+                    raw(`case when bookmarks.id IS NULL then false else true end as "bookmarked"`)
+                )
+                // .leftJoin('bookmarks', (join) => {
+                //     join.on('bookmarks.article_id', '=', 'articles.id').andOn(raw('bookmarks.user_id = ?', '1'));
+                // })
+                .joinRelation('bookmarks')
+                .eager('user')
+                .where({ status: true, 'bookmarks.user_id': authorId })
+                .page(offset, limit)
+                .debug(true);
+
+            let response = {
+                data: articles.results,
+                paged: {
+                    page: pageNo,
+                    pageSize: limit,
+                    rowCount: articles.total,
+                    pageCount: Math.ceil(articles.total / limit)
+                }
+            };
+
+            res.status(200).json(response);
+        } catch (error) {
+            next({ status: 400, message: error });
+        }
+
+    }
+
     public async create(req: Request, res: Response, next: NextFunction) {
         const user = req['user'];
         if (!user) {
@@ -253,25 +330,10 @@ export class ArticleController {
                     api_secret: '--ZROy5RT31hr5SKQV4eQEw1VBQ'
                 });
                 const uniqueFilename = new Date().toISOString();
-                cloudinary.uploader.upload(
-                    './uploads/backdrop_1549692851279_1*lj9A6xVpbqmCWCIlPguOKw.png',
-                    // dUri.content,
-                    { public_id: `blog/${uniqueFilename}`, tags: `blog` }, // directory and tags are optional
-                    function (err, image) {
-                        if (err) {
-                            console.log(err);
-                        }
-                        console.log('file uploaded to Cloudinary')
-                    }
-                )
                 cloudinary.uploader.upload_stream({ public_id: `blog/${uniqueFilename}`, tags: `blog` }, async (error, result) => {
                     if (error) {
                         next({ status: 400, message: error });
                     } else {
-                        // uncomment if file is writing to disk
-                        // if (req.file != undefined) {
-                        //     backdrop = 'http://localhost:3000/' + req.file.filename;
-                        // }                        
                         try {
                             let slug = slugify(req.body.heading, { remove: /[*+~.()'"!:@]/g, lower: true });
                             let articleCreate = await Article
@@ -488,6 +550,7 @@ export class ArticleController {
         this.router.post('/', auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.create);
         this.router.get('/:slug', this.getBySlug);
         this.router.get('/author/:authorId', this.getByAuthor);
+        this.router.get('/bookmark/:authorId', this.getBookmarkedArticle);
         // this.router.get('/:id'              , this.getOne);
         // this.router.put('/:id'              , this.update);
         // this.router.delete('/:id'           , this.delete);

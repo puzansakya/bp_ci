@@ -1,6 +1,7 @@
 import { Model } from 'objection';
 import User from './User';
 import Clap from './Clap';
+import Bookmark from './Bookmark';
 
 export default class Article extends Model {
 
@@ -36,6 +37,14 @@ export default class Article extends Model {
                 join: {
                     from: 'articles.id',
                     to: 'claps.article_id'
+                }
+            },
+            bookmarks: {
+                modelClass: Bookmark,
+                relation: Model.HasManyRelation,
+                join: {
+                    from: 'articles.id',
+                    to: 'bookmarks.article_id'
                 }
             },
         };

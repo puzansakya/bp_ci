@@ -1,0 +1,53 @@
+<!-- Begin Site Title -->
+<div class="container">
+  <div class="mainheading">
+    <h1 class="sitetitle">What’s on our mind?</h1>
+    <p class="lead mainheading__lead">
+      Collection of articles, videos, and resources made by designers at Facebook.
+    </p>
+  </div>
+  <!-- End Site Title -->
+
+  <!-- Begin List Posts -->
+  <section class="recent-posts">
+    <div class="section-title">
+      <h2>
+        <span>Bookmarked</span>
+      </h2>
+    </div>
+
+    <div class="home__container">
+      <div class="home__container--wrapper">
+        <!-- [scrollThrottlingTime]="200" -->
+        <!-- <virtual-scroller #scroll [parentScroll]="scroll.window" [items]="articles$ | async" detect-scroll (onScroll)="handleScroll($event)"
+          [bottomOffset]="0" [topOffset]="200">
+          <div class="flex__wrapper--item " *ngFor="let item of scroll.viewPortItems">
+            <div class="flex-columns listrecent">
+              <card [article]="item" (bookmark)="toggleBookmark($event)"></card>
+            </div>
+          </div>
+        </virtual-scroller> -->
+      </div>
+
+      <div class="u__block">
+        <!-- <loader *ngIf="(loading$ | async)"></loader> -->
+        <!-- Begin Footer -->
+        <div class="footer">
+          <p class="pull-left">
+            Copyright &copy; 2017 Your Website Name
+          </p>
+          <p class="pull-right">
+            Mediumish Theme by
+            <a target="_blank" href="https://www.wowthemes.net">WowThemes.net</a>
+          </p>
+          <div class="clearfix">
+          </div>
+        </div>
+        <!-- End Footer -->
+      </div>
+
+    </div>
+
+  </section>
+</div>
+<!-- /.container -->

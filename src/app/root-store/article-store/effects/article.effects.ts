@@ -57,6 +57,22 @@ export class ArticleEffects {
     );
 
     @Effect()
+    loadBookmarkedArticles$ = ({ debounce = 3000, scheduler = asyncScheduler } = {}): Observable<Action> => this.actions$.pipe(
+        // debounceTime(debounce, scheduler),
+        ofType(articleActions.LOAD_BOOKMARK_ARTICLES),
+        map((action: articleActions.LoadBookmarkArticles) => action.payload),
+        switchMap((authorId: number) => {
+            console.log('effects called');
+            return this.articleService
+                .getBookmarkedArticles(authorId)
+                .pipe(
+                    map(articles => new articleActions.LoadBookmarkArticlesSuccess(articles)),
+                    catchError(error => of(new articleActions.LoadBookmarkArticlesFail(error)))
+                );
+        })
+    );
+
+    @Effect()
     loadArticle$ = this.actions$.pipe(
         // debounceTime(debounce, scheduler),
         ofType(articleActions.LOAD_ARTICLE),

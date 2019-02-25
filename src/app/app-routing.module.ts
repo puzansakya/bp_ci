@@ -27,7 +27,11 @@ const routes: Routes = [
     path: 'categories',
     canActivate: [fromGuards.AuthGuard], data: { expectedRole: ['ADMIN'] },
     loadChildren: './category/category.module#CategoryModule'
-  }
+  },
+  {
+    path: 'bookmarks',    
+    loadChildren: './bookmark/bookmark.module#BookmarkModule'
+  }  
 ];
 
 @NgModule({

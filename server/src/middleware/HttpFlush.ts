@@ -6,7 +6,7 @@ export class HttpFlush {
     }
 
     public notFound(req: Request, res: Response, next: NextFunction) {
-        const err: { status?: number, message: string } = new Error('Not Found');
+        // const err: { status?: number, message: string } = new Error('Not Found');
         // next(err);
         res.status(400).json({
             error: "not found"
