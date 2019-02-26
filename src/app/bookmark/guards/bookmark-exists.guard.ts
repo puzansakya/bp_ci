@@ -51,7 +51,7 @@ export class BookmarkExistsGuard implements CanActivate {
                 if (user) {
                     this.articleStore.dispatch(new fromArticleStore.LoadBookmarkArticles(user.id));
                 } else {
-                    this.articleStore.dispatch(new fromAuthStore.Authenticated);
+                    this.authStore.dispatch(new fromAuthStore.Authenticated);
                 }
             }),
             map(() => this.articleStore.select(fromArticleStore.getArticles)), // <-- dispatch loadbookmark action and return articleselectobservable

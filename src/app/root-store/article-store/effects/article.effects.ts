@@ -61,8 +61,7 @@ export class ArticleEffects {
         // debounceTime(debounce, scheduler),
         ofType(articleActions.LOAD_BOOKMARK_ARTICLES),
         map((action: articleActions.LoadBookmarkArticles) => action.payload),
-        switchMap((authorId: number) => {
-            console.log('effects called');
+        switchMap((authorId: number) => {            
             return this.articleService
                 .getBookmarkedArticles(authorId)
                 .pipe(

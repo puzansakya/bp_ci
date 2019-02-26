@@ -38,8 +38,7 @@ export class AuthorExistsGuard implements CanActivate {
             );
     }
 
-    canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-        console.log(route.params.authorId);
+    canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {        
         this.articleStore.dispatch(new fromArticleStore.Reset())
         // this.articleStore.dispatch(new fromArticleStore.LoadAuthorArticles(route.params.authorId));
         return this.getFromStoreOrAPI(route.params.authorId).pipe(

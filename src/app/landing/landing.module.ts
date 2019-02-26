@@ -2,8 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
+// stores
+import { ArticleStoreModule } from '../root-store/article-store/article-store.module';
+import { AuthStoreModule } from '../root-store/auth-store/auth-store.module';
+
 
 // virtual scroller
 import { VirtualScrollerModule } from '../virtual-scroller/virtual-scroller';
@@ -19,7 +21,6 @@ import * as fromGuards from './guards';
 
 // scroll event
 import { ScrollEventModule } from '../scroll-event/scroll.module';
-import { ArticleStoreModule } from '../root-store/article-store/article-store.module';
 
 // routes
 export const ROUTES: Routes = [
@@ -36,6 +37,7 @@ export const ROUTES: Routes = [
     RouterModule.forChild(ROUTES),
     SharedModule,
     ArticleStoreModule,
+    AuthStoreModule,
     VirtualScrollerModule,
     ScrollEventModule
   ],

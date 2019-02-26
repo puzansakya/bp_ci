@@ -1,12 +1,22 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
+// stores
 import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import * as fromArticleStore from '../../../root-store/article-store';
+import * as fromAuthStore from '../../../root-store/auth-store';
 
-import * as fromStore from '../../../root-store/article-store';
+// rxjs
+import { Observable, Subject } from 'rxjs';
+import { takeUntil, take } from 'rxjs/operators';
+
+
+// models
 import { Article } from '../../../core/models/article.model';
+
+// others
 import { ScrollEvent } from '../../../scroll-event/scroll.directive';
+
+// services
 import { SeoService } from '../../../core/services';
 
 @Component({
@@ -26,18 +36,28 @@ export class LandingComponent implements OnInit, OnDestroy {
   // initial pgae number
   page: number = 0;
 
+  isLoggedIn: boolean;
+
   constructor(
-    private store: Store<fromStore.ArticleState>,
+    private articleStore: Store<fromArticleStore.ArticleState>,
+    private authStore: Store<fromAuthStore.AuthState>,
     private seo: SeoService
   ) { }
 
   ngOnInit() {
+    // check loggedin
+    this.authStore.select(fromAuthStore.isAuth)
+      .pipe(
+        take(1),
+    ).subscribe((logged: boolean) => {
+      this.isLoggedIn = logged;
+    });
     // dispatch action to load articles
-    this.store.dispatch(new fromStore.LoadArticles(1));
+    this.articleStore.dispatch(new fromArticleStore.LoadArticles(1));
     // store the articles observable
-    this.loading$ = this.store.select(fromStore.getArticleLoading);
+    this.loading$ = this.articleStore.select(fromArticleStore.getArticleLoading);
     // store the loading observable
-    this.articles$ = this.store.select(fromStore.getArticles);
+    this.articles$ = this.articleStore.select(fromArticleStore.getArticles);
     // set meta tags
     this.seo.generateTags({
       title: 'Medium clone',
@@ -56,7 +76,7 @@ export class LandingComponent implements OnInit, OnDestroy {
     // check if bottom
     if (event.isReachingBottom) {
       // retrieve the paged observable from store
-      this.store.select(fromStore.getArticlePaged)
+      this.articleStore.select(fromArticleStore.getArticlePaged)
         .pipe(
           takeUntil(this._destroyed$),
       ).subscribe(paged => {
@@ -65,7 +85,7 @@ export class LandingComponent implements OnInit, OnDestroy {
         // check if the page number is not greater than paged total page count        
         if (newPage <= paged.pageCount) {
           // if condition satisfies dispatch action to load more
-          this.debounced(5000, this.store.dispatch(new fromStore.LoadArticles(newPage)));
+          this.debounced(5000, this.articleStore.dispatch(new fromArticleStore.LoadArticles(newPage)));
         }
       });
     }
@@ -95,8 +115,12 @@ export class LandingComponent implements OnInit, OnDestroy {
    * @param article 
    */
   toggleBookmark(article: Article) {
-    // dispatch bookmark action
-    this.store.dispatch(new fromStore.Bookmark({ ...article, bookmarked: !article.bookmarked }));
+    // dispatch bookmark action  
+    if (this.isLoggedIn) {
+      this.articleStore.dispatch(new fromArticleStore.Bookmark({ ...article, bookmarked: !article.bookmarked }));
+    } else {
+      this.authStore.dispatch(new fromAuthStore.Authenticated);
+    }
   }
 
   /**
@@ -104,6 +128,6 @@ export class LandingComponent implements OnInit, OnDestroy {
    */
   public ngOnDestroy(): void {
     this._destroyed$.next();
-    this._destroyed$.complete();    
+    this._destroyed$.complete();
   }
 }

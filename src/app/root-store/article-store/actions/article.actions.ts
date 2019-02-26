@@ -91,9 +91,7 @@ export const LOAD_BOOKMARK_ARTICLES_FAIL = '[Articles] Load Bookmark Articles Fa
 
 export class LoadBookmarkArticles implements Action {
     readonly type = LOAD_BOOKMARK_ARTICLES;
-    constructor(public payload: number) {
-        console.log('action called');
-    }
+    constructor(public payload: number) {        }
 }
 
 export class LoadBookmarkArticlesSuccess implements Action {
@@ -113,7 +111,7 @@ export const BOOKMARK_SUCCESS = '[Articles] Bookmark Success';
 
 export class Bookmark implements Action {
     readonly type = BOOKMARK;
-    constructor(public payload: Article) { }
+    constructor(public payload: Article) {}
 }
 
 export class BookmarkSuccess implements Action {

@@ -82,7 +82,7 @@ export function reducer(state: AuthState = initialState, action: AuthAction): Au
     }
 }
 
-export const isAuthenticated = (state: AuthState) => { state.authenticated };
+export const isAuthenticated = (state: AuthState) => state.authenticated;
 export const getLoading = (state: AuthState) => state.loading;
 export const getError = (state: AuthState) => state.error;
 export const getUser = (state: AuthState) => state.user;

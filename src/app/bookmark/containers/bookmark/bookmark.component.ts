@@ -110,8 +110,7 @@ export class BookmarkComponent implements OnInit {
    * @param article 
    */
   toggleBookmark(article: Article) {
-    // dispatch bookmark action
-    console.log('asdf');
+    // dispatch bookmark action    
     this.articleStore.dispatch(new fromArticleStore.BookmarkRemove({ ...article, bookmarked: !article.bookmarked }));
   }
 

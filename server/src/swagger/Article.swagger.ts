@@ -269,4 +269,6 @@
  *     responses:
  *       201:
  *         description: bookmarked
+ *     security:
+ *       - jwt: []
  */

@@ -74,8 +74,7 @@ export class LoginComponent implements OnInit {
       email: this.f.email.value,
       password: this.f.password.value
     };
-
-    console.log(payload);
+    
     this.store.dispatch(new fromAuthStore.Login(payload));
   }
 

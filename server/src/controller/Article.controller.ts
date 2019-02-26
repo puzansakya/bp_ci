@@ -75,10 +75,19 @@ export class ArticleController {
 
             }
 
-            // const user = req['user'];
-            // if(user){
-
-            // }
+            const user = req['user'];
+            console.log(user);
+            if (user) {
+                query.select(
+                    raw(`case when bookmarks.id IS NULL then false else true end as "bookmarked"`)
+                )
+                    // .leftJoin('bookmarks', (join) => {
+                    //     join.on('bookmarks.article_id', '=', 'articles.id').andOn(raw('bookmarks.user_id = ?', '1'));
+                    // })
+                    .leftJoin('bookmarks', (join) => {
+                        join.on('bookmarks.article_id', '=', 'articles.id').andOn(raw('bookmarks.user_id = ?', user.sub));
+                    })
+            }
             let articles = await query
                 .select(
                     'articles.id',
@@ -88,8 +97,12 @@ export class ArticleController {
                     'articles.backdrop',
                     'articles.created_at',
                     'articles.modified_date',
-                    Article.relatedQuery('claps').count().as('claps'),
-            )
+                    Article.relatedQuery('claps').count().as('claps')
+                    // raw(`case when bookmarks.id IS NULL then false else true end as "bookmarked"`)
+                )
+                // .leftJoin('bookmarks', (join) => {
+                //     join.on('bookmarks.article_id', '=', 'articles.id').andOn(raw('bookmarks.user_id = ?', '3'));
+                // })
                 .eager('user')
                 .where({ status: true })
                 .page(offset, limit)
@@ -435,10 +448,10 @@ export class ArticleController {
     public async bookmark(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req['user'];
-            if (!user) {                
+            if (!user) {
                 next({ status: 400, message: 'user not found' });
-            }
-            if (req.body.bookmark) {
+            }            
+            if (req.body.bookmarked) {
                 let bookmarkCreate = await Bookmark
                     .query()
                     .insert({
@@ -446,7 +459,7 @@ export class ArticleController {
                         article_id: req.body.id
                     }).debug(true);
                 res.status(201).json({ message: 'bookmarked' });
-            } else {                
+            } else {
                 let bookmarkDelete = await Bookmark
                     .query()
                     .delete()
@@ -457,8 +470,7 @@ export class ArticleController {
                     .debug(true);
                 res.status(201).json({ message: 'Bookmark removed' });
             }
-        } catch (error) {
-            console.log('error', error);
+        } catch (error) {            
             next({ status: 400, message: error });
 
         }
@@ -543,7 +555,7 @@ export class ArticleController {
 
     initRoutes() {
         // this.router.get('/', auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN']), this.getAll);
-        this.router.get('/', this.getAll);
+        this.router.get('/', auth.checkIfAuthenticated, this.getAll);
         this.router.post('/', auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.create);
         this.router.get('/:slug', this.getBySlug);
         this.router.get('/author/:authorId', this.getByAuthor);
