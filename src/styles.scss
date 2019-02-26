@@ -67,3 +67,34 @@
 .ng-sidebar__backdrop {
     z-index: 3 !important;
 }
+
+.flex__wrapper {
+    &--item {
+        width: 32.13%;
+        margin-bottom: 1.25rem;
+    }
+}
+
+@media only screen and (max-width: 990px) {
+    .flex__wrapper {
+        &--item {
+            width: 49%;
+            margin-bottom: 1.25rem;
+        }
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .flex__wrapper {
+        &--item {
+            width: 100%;
+            margin-bottom: 1.25rem;
+        }
+    }
+}
+
+.u__block {
+    display: inline-block;
+    width: 100%;
+    margin-top: 60px;
+}

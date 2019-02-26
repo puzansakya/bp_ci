@@ -29,9 +29,10 @@ const routes: Routes = [
     loadChildren: './category/category.module#CategoryModule'
   },
   {
-    path: 'bookmarks',    
+    path: 'bookmarks',
+    canActivate: [fromGuards.AuthGuard],
     loadChildren: './bookmark/bookmark.module#BookmarkModule'
-  }  
+  }
 ];
 
 @NgModule({

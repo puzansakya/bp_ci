@@ -96,7 +96,7 @@ export class LandingComponent implements OnInit, OnDestroy {
    */
   toggleBookmark(article: Article) {
     // dispatch bookmark action
-    this.store.dispatch(new fromStore.Bookmark({ ...article, bookmark: !article.bookmark }));
+    this.store.dispatch(new fromStore.Bookmark({ ...article, bookmarked: !article.bookmarked }));
   }
 
   /**

@@ -11,10 +11,16 @@ import { ArticleStoreModule } from '../root-store/article-store/article-store.mo
 // guards
 import * as fromGuards from './guards';
 
+// shared module
+import { SharedModule } from '../shared/shared.module';
+import { ScrollEventModule } from '../scroll-event/scroll.module';
+import { VirtualScrollerModule } from '../virtual-scroller/virtual-scroller';
+import { AuthModule } from '../auth/auth.module';
+
 // routes
 export const ROUTES: Routes = [
   {
-    path: ':authorId',
+    path: '',
     canActivate: [fromGuards.BookmarkExistsGuard],
     component: fromContainers.BookmarkComponent,
   }
@@ -25,6 +31,10 @@ export const ROUTES: Routes = [
   imports: [
     CommonModule,
     ArticleStoreModule,
+    SharedModule,
+    AuthModule,
+    ScrollEventModule,
+    VirtualScrollerModule,
     RouterModule.forChild(ROUTES)
   ],
   exports: [...fromContainers.containers],

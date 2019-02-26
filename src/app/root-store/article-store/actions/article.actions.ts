@@ -126,6 +126,14 @@ export class BookmarkFail implements Action {
     constructor(public payload: any) { }
 }
 
+// remove bookmark
+export const BOOKMARK_REMOVE = '[Articles] Bookmark Remove';
+
+export class BookmarkRemove implements Action {
+    readonly type = BOOKMARK_REMOVE;
+    constructor(public payload: Article) { }
+}
+
 // reset article store
 export const RESET = '[Articles] Reset';
 
@@ -139,7 +147,7 @@ export type ArticleAction =
     | LoadArticle | LoadArticleFail | LoadArticleSuccess
     | LoadArticles | LoadArticlesSuccess | LoadArticlesFail
     | CreateArticle | CreateArticleSuccess | CreateArticleFail
-    | Bookmark | BookmarkSuccess | BookmarkFail
+    | Bookmark | BookmarkSuccess | BookmarkFail | BookmarkRemove
     | LoadAuthorArticles | LoadAuthorArticlesSuccess | LoadAuthorArticlesFail
     | LoadBookmarkArticles | LoadBookmarkArticlesSuccess | LoadBookmarkArticlesFail
     | Reset;

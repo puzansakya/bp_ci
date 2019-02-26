@@ -26,7 +26,7 @@ export class ArticleService {
   getBookmarkedArticles(authorId: number): Observable<Articles> {
     console.log('service called');
     return this.http
-      .get<Articles>(`http://localhost:3000/api/v1/articles/bookmark/${authorId}`)
+      .get<Articles>(`https://medium-puzan.herokuapp.com//api/v1/articles/bookmark/${authorId}`)
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
@@ -57,7 +57,7 @@ export class ArticleService {
 
   bookmarkArticle(article: Article) {
     return this.http
-      .post<Article>(`https://medium-puzan.herokuapp.com/api/v1/articles/bookmark`, article)
+      .post<Article>(`https://medium-puzan.herokuapp.com//api/v1/articles/bookmark`, article)
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 }

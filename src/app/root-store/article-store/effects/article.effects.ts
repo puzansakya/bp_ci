@@ -121,4 +121,18 @@ export class ArticleEffects {
         })
     );
 
+    @Effect()
+    bookmarkRemoveArticle$ = this.actions$.pipe(
+        ofType(articleActions.BOOKMARK_REMOVE),
+        map((action: articleActions.BookmarkRemove) => action.payload),
+        switchMap(payload => {
+            return this.articleService
+                .bookmarkArticle(payload)
+                .pipe(
+                    map(article => new articleActions.CreateArticleSuccess(article)),
+                    catchError(error => of(new articleActions.CreateArticleFail(error)))
+                );
+        })
+    );
+
 }

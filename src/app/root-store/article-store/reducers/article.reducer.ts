@@ -36,7 +36,7 @@ export const featureAdapter: EntityAdapter<Article> = createEntityAdapter<Articl
 
 export interface ArticleState extends EntityState<Article> {
     entities: { [id: number]: Article };
-    entity: Article;    
+    entity: Article;
     paged: paged;
     loading: boolean;
     loaded: boolean;
@@ -46,7 +46,7 @@ export interface ArticleState extends EntityState<Article> {
 
 export const initialState: ArticleState = featureAdapter.getInitialState({
     entities: {},
-    entity: null,    
+    entity: null,
     paged: {
         page: 0,
         pageSize: 0,
@@ -130,6 +130,29 @@ export function reducer(
                 loaded: false,
             };
         }
+        case fromArticle.LOAD_BOOKMARK_ARTICLES: {
+            return {
+                ...state,
+                loading: true,
+            };
+        }
+        case fromArticle.LOAD_BOOKMARK_ARTICLES_SUCCESS: {
+            const articles = action.payload;
+            const paged = articles.paged;
+            return featureAdapter.addAll(articles.data, {
+                ...state,
+                loading: false,
+                loaded: true,
+                paged
+            });
+        }
+        case fromArticle.LOAD_BOOKMARK_ARTICLES_FAIL: {
+            return {
+                ...state,
+                loading: false,
+                loaded: false,
+            };
+        }
         case fromArticle.LOAD_ARTICLE: {
             return {
                 ...state,
@@ -169,14 +192,17 @@ export function reducer(
         }
         case fromArticle.BOOKMARK: {
             const article = action.payload;
-
             return {
                 ...state,
                 entities: {
                     ...state.entities,
-                    [article.id]: { ...article, bookmark: !state.entities[article.id].bookmark },
+                    [article.id]: { ...article, bookmarked: !state.entities[article.id].bookmarked },
                 },
             };
+        }
+        case fromArticle.BOOKMARK_REMOVE: {
+            const article = action.payload;
+            return featureAdapter.removeOne(article.id, state);
         }
         case fromArticle.RESET: {
 

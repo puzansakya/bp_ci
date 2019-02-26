@@ -9,7 +9,7 @@ export interface Article {
     backdrop?       : string;
     status?         : string;
     created_at?     : string;
-    bookmark?       : boolean;
+    bookmarked?     : boolean;
     // category?   : string;
     // author?: string;
     // avatar?: string;

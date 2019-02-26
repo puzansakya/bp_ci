@@ -435,8 +435,7 @@ export class ArticleController {
     public async bookmark(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req['user'];
-            if (!user) {
-                console.log('debug');
+            if (!user) {                
                 next({ status: 400, message: 'user not found' });
             }
             if (req.body.bookmark) {
@@ -447,9 +446,7 @@ export class ArticleController {
                         article_id: req.body.id
                     }).debug(true);
                 res.status(201).json({ message: 'bookmarked' });
-            } else {
-                console.log('req.body', req.body);
-                console.log('user', user);
+            } else {                
                 let bookmarkDelete = await Bookmark
                     .query()
                     .delete()
