@@ -450,7 +450,7 @@ export class ArticleController {
             const user = req['user'];
             if (!user) {
                 next({ status: 400, message: 'user not found' });
-            }            
+            }
             if (req.body.bookmarked) {
                 let bookmarkCreate = await Bookmark
                     .query()
@@ -470,7 +470,7 @@ export class ArticleController {
                     .debug(true);
                 res.status(201).json({ message: 'Bookmark removed' });
             }
-        } catch (error) {            
+        } catch (error) {
             next({ status: 400, message: error });
 
         }
@@ -559,7 +559,7 @@ export class ArticleController {
         this.router.post('/', auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.create);
         this.router.get('/:slug', this.getBySlug);
         this.router.get('/author/:authorId', this.getByAuthor);
-        this.router.get('/bookmark/:authorId', this.getBookmarkedArticle);
+        this.router.get('/bookmark/:authorId', auth.checkIfAuthenticated, this.getBookmarkedArticle);
         // this.router.get('/:id'              , this.getOne);
         // this.router.put('/:id'              , this.update);
         // this.router.delete('/:id'           , this.delete);

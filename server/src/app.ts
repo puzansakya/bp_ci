@@ -72,7 +72,7 @@ class App {
 
     constructor() {
         // change the database environment here
-        Model.knex(Knex(objection.production));
+        Model.knex(Knex(objection.development));
 
         this.httpFlush = new HttpFlush();
         this.express = express();
