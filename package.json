@@ -76,6 +76,7 @@
     "@angular/language-service": "~7.0.0",
     "@types/bcrypt": "^3.0.0",
     "@types/cors": "^2.8.4",
+    "@types/dotenv": "^6.1.0",
     "@types/helmet": "^0.0.42",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",

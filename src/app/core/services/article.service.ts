@@ -42,8 +42,7 @@ export class ArticleService {
       formdata.append('backdrop', payload.buffer);
     }
 
-    formdata.append('heading', payload.article.heading);
-    // formdata.append('slug', payload.article.slug);
+    formdata.append('heading', payload.article.heading);    
     formdata.append('description', payload.article.description);
     formdata.append('category_id', payload.article.category_id);
     formdata.append('status', payload.article.status);

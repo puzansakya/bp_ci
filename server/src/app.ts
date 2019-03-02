@@ -1,59 +1,55 @@
 import 'zone.js/dist/zone-node';
 import 'reflect-metadata';
-// import { enableProdMode } from '@angular/core';
-// import { ngExpressEngine } from '@nguniversal/express-engine';
-// import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
-// import { AppServerModuleNgFactory, LAZY_MODULE_MAP } from '../../dist/server/main';
 
-import { renderModuleFactory } from '@angular/platform-server';
-import { enableProdMode } from '@angular/core';
-import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
+import { renderModuleFactory }  from '@angular/platform-server';
+import { enableProdMode }       from '@angular/core';
+import { provideModuleMap }     from '@nguniversal/module-map-ngfactory-loader';
 
-import * as path from 'path';
-import * as express from 'express';
-import * as logger from 'morgan';
-import * as bodyParser from 'body-parser';
-import * as cors from 'cors';
-import * as objection from './objection';
-import * as Knex from 'knex';
+import * as path        from 'path';
+import * as express     from 'express';
+import * as logger      from 'morgan';
+import * as bodyParser  from 'body-parser';
+import * as cors        from 'cors';
+import * as objection   from './objection';
+import * as Knex        from 'knex';
 import * as compression from 'compression';
-import * as helmet from 'helmet';
-import * as fs from 'fs';
-import * as dotenv from 'dotenv';
+import * as helmet      from 'helmet';
+import * as fs          from 'fs';
+import * as dotenv      from 'dotenv';
 
-import { Model } from 'objection';
-import { HttpFlush } from './middleware/HttpFlush';
-import customValidator from './middleware/Validator.middleware';
+import { Model }        from 'objection';
+import { HttpFlush }    from './middleware/HttpFlush';
+import customValidator  from './middleware/Validator.middleware';
 
 // Validators
 import { UserObject } from './validators/User.validator';
 
 // Controllers
-import userController from './controller/User.controller';
-import articleController from './controller/Article.controller';
-import categoryController from './controller/Category.controller';
+import userController       from './controller/User.controller';
+import articleController    from './controller/Article.controller';
+import categoryController   from './controller/Category.controller';
 
 // Swagger
 import swaggerJSDoc = require('swagger-jsdoc');
-import swaggerUi = require('swagger-ui-express');
+import swaggerUi    = require('swagger-ui-express');
 
 const swaggerDefinition = {
     info: {
-        title: 'Blog',
-        version: '1.0.0',
-        description: 'Api documentation for my personal blog.',
+        title       : 'Blog',
+        version     : '1.0.0',
+        description : 'Api documentation for my personal blog.',
     },
-    basePath: '/',
+    basePath    : '/',
 };
 
 const options = {
     swaggerDefinition,
-    apis: [path.join(__dirname, '/swagger/*.js')],
-    components: {
-        securitySchemes: {
-            bearerAuth: {
-                type: "http",
-                scheme: "bearer",
+    apis        : [path.join(__dirname, '/swagger/*.js')],
+    components  : {
+        securitySchemes : {
+            bearerAuth  : {
+                type        : "http",
+                scheme      : "bearer",
                 bearerFormat: "JWT"
             }
         }
@@ -67,15 +63,14 @@ const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require('../../dist/server
 
 class App {
 
-    private httpFlush: HttpFlush;
-    public express: express.Application;
+    private httpFlush   : HttpFlush;
+    public express      : express.Application;
 
-    constructor() {
-        // change the database environment here
+    constructor() {        
         Model.knex(Knex(objection.production));
 
-        this.httpFlush = new HttpFlush();
-        this.express = express();
+        this.httpFlush  = new HttpFlush();
+        this.express    = express();
 
         enableProdMode();
         dotenv.config();
@@ -91,29 +86,22 @@ class App {
         this.express.use(bodyParser.urlencoded({ extended: false }));
         this.express.use(cors());
         this.express.use(compression());
-        this.express.use(helmet());
-        // csp
-        // this.express.use(helmet.contentSecurityPolicy({
-        //     directives: {
-        //         defaultSrc: ["'self'"],
-        //         styleSrc: ["'self'", 'fonts.googleapis.com']
-        //     }
-        // }))
-
-        // this.express.engine('html', ngExpressEngine({
-        //     bootstrap: AppServerModuleNgFactory,
-        //     providers: [
-        //         provideModuleMap(LAZY_MODULE_MAP)
-        //     ]
-        // }));
+        this.express.use(helmet());    
 
         if (process.env.mode === 'prod') {
-            let template = fs.readFileSync(path.join(DIST_FOLDER, 'browser', 'index.html')).toString();
-            this.express.engine('html', (_, options, callback) => {
-                renderModuleFactory(AppServerModuleNgFactory, {
+            let template = fs.readFileSync(
+                path.join(
+                    DIST_FOLDER, 'browser', 
+                    'index.html'
+            )).toString();
+
+            this.express.engine(
+                'html', 
+                (_, options, callback) => {
+                    renderModuleFactory(AppServerModuleNgFactory, {
                     // Our index.html
-                    document: template,
-                    url: options.req.url,
+                    document    : template,
+                    url         : options.req.url,
                     // DI so that we can get lazy-loading to work differently (since we need it to just instantly render it)
                     extraProviders: [
                         provideModuleMap(LAZY_MODULE_MAP)
@@ -124,8 +112,7 @@ class App {
             });
         }
 
-        this.express.set('view engine', 'html');
-        // this.express.set('views', './dist/browser');
+        this.express.set('view engine', 'html');        
         this.express.set('views', path.join(DIST_FOLDER, 'browser'));
 
 
@@ -141,28 +128,10 @@ class App {
             const location = req.url.substring(10);
             res.redirect(301, location);
         });
-
-        /**
-         * statics
-         */
-        // this.express.use(
-        //     express.static(path.join(__dirname, '../uploads'), { maxAge: 31557600000 })
-        // );  
-        // this.express.use(
-        //     express.static('./dist/browser', {
-        //         maxAge: '1y'
-        //     }));
+        
         this.express.get('*.*', express.static(path.join(DIST_FOLDER, 'browser')));
         this.express.get('*.*', express.static(path.join(DIST_FOLDER, '../uploads')));
-        // this.express.get('*.*', express.static('./dist/browser', {
-        //     maxAge: '1y'
-        //   }));
-
-        /**
-         * check api key
-         * Uncomment if implemented
-         */
-        // this.express.use(this.httpFlush.checkKey);   
+           
 
         /**
          * swagger
@@ -177,9 +146,9 @@ class App {
 
         this.express.get('/api-docs', swaggerUi.serve);
 
-        this.express.use('/api/v1/user', customValidator.validate(UserObject), userController);
-        this.express.use('/api/v1/articles', articleController);
-        this.express.use('/api/v1/categories', categoryController);
+        this.express.use('/api/v1/user'         , customValidator.validate(UserObject), userController);
+        this.express.use('/api/v1/articles'     , articleController);
+        this.express.use('/api/v1/categories'   , categoryController);
 
         /**
         * universal redirect should be at last

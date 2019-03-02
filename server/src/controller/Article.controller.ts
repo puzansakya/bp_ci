@@ -1,18 +1,14 @@
 import { Router, NextFunction, Response, Request } from "express";
-import Article from "../models/Article";
-import Clap from "../models/Clap";
-import { upload } from "../middleware/Fileupload";
+import Article      from "../models/Article";
+import Clap         from "../models/Clap";
+import { upload }   from "../middleware/Fileupload";
+import { raw }      from "objection";
+import slugify      from 'slugify';
+import * as _       from 'lodash';
+import auth         from '../middleware/Authentication.middleware';
+import Bookmark     from "../models/Bookmark";
+
 const cloudinary = require('cloudinary').v2;
-import { raw } from "objection";
-
-import slugify from 'slugify';
-
-import * as _ from 'lodash';
-// const checkIfAuthenticated = require('../middlewares/Authentication.middleware').checkIfAuthenticated;
-import auth from '../middleware/Authentication.middleware';
-import Bookmark from "../models/Bookmark";
-// const checkIfAuthenticated = require('../middleware/Authentication.middleware').checkIfAuthenticated;
-// const checkIfAuthorized = require('../middleware/Authorization.middleware').checkIfAuthorized;
 
 
 
@@ -35,7 +31,7 @@ export class ArticleController {
 
     }
 
-    public async getAll(req: Request, res: Response, next: NextFunction) {
+    public async get_all(req: Request, res: Response, next: NextFunction) {
 
         try {
             //parse search parameter
@@ -76,15 +72,13 @@ export class ArticleController {
             }
 
             const user = req['user'];
-            console.log(user);
+
             if (user) {
                 query.select(
                     raw(`case when bookmarks.id IS NULL then false else true end as "bookmarked"`)
-                )
-                    // .leftJoin('bookmarks', (join) => {
-                    //     join.on('bookmarks.article_id', '=', 'articles.id').andOn(raw('bookmarks.user_id = ?', '1'));
-                    // })
-                    .leftJoin('bookmarks', (join) => {
+                ).leftJoin(
+                    'bookmarks', 
+                    (join) => {
                         join.on('bookmarks.article_id', '=', 'articles.id').andOn(raw('bookmarks.user_id = ?', user.sub));
                     })
             }
@@ -97,12 +91,8 @@ export class ArticleController {
                     'articles.backdrop',
                     'articles.created_at',
                     'articles.modified_date',
-                    Article.relatedQuery('claps').count().as('claps')
-                    // raw(`case when bookmarks.id IS NULL then false else true end as "bookmarked"`)
-                )
-                // .leftJoin('bookmarks', (join) => {
-                //     join.on('bookmarks.article_id', '=', 'articles.id').andOn(raw('bookmarks.user_id = ?', '3'));
-                // })
+                    Article.relatedQuery('claps').count().as('claps')                 
+                )                
                 .eager('user')
                 .where({ status: true })
                 .page(offset, limit)
@@ -125,7 +115,7 @@ export class ArticleController {
 
     }
 
-    public async getOne(req: Request, res: Response, next: NextFunction) {
+    public async get_one(req: Request, res: Response, next: NextFunction) {
 
         try {
             let articleOne = await Article
@@ -140,7 +130,7 @@ export class ArticleController {
 
     }
 
-    public async getBySlug(req: Request, res: Response, next: NextFunction) {
+    public async get_by_slug(req: Request, res: Response, next: NextFunction) {
 
         try {
             let articleSlug = await Article
@@ -157,7 +147,7 @@ export class ArticleController {
 
     }
 
-    public async getByAuthor(req: Request, res: Response, next: NextFunction) {
+    public async get_by_author(req: Request, res: Response, next: NextFunction) {
 
         try {
             //parse search parameter
@@ -197,10 +187,6 @@ export class ArticleController {
 
             }
 
-            // const user = req['user'];
-            // if(user){
-
-            // }
             let articles = await query
                 .eager('user')
                 .where({ status: true, user_id: req.params.authorId })
@@ -224,7 +210,7 @@ export class ArticleController {
 
     }
 
-    public async getBookmarkedArticle(req: Request, res: Response, next: NextFunction) {
+    public async get_bookmarked_article(req: Request, res: Response, next: NextFunction) {
 
         try {
             //parse search parameter
@@ -265,18 +251,11 @@ export class ArticleController {
 
             }
 
-            // const user = req['user'];
-            // if(user){
-
-            // }
             let articles = await query
                 .select(
                     'articles.*',
                     raw(`case when bookmarks.id IS NULL then false else true end as "bookmarked"`)
                 )
-                // .leftJoin('bookmarks', (join) => {
-                //     join.on('bookmarks.article_id', '=', 'articles.id').andOn(raw('bookmarks.user_id = ?', '1'));
-                // })
                 .joinRelation('bookmarks')
                 .eager('user')
                 .where({ status: true, 'bookmarks.user_id': authorId })
@@ -290,6 +269,75 @@ export class ArticleController {
                     pageSize: limit,
                     rowCount: articles.total,
                     pageCount: Math.ceil(articles.total / limit)
+                }
+            };
+
+            res.status(200).json(response);
+        } catch (error) {
+            next({ status: 400, message: error });
+        }
+
+    }
+
+    public async my_stories(req: Request, res: Response, next: NextFunction) {
+
+        try {
+            //parse search parameter
+            let search = req.query.search;
+            let order = req.query.order;
+            let sort = req.query.sort;
+            let authorId = req.params.authorId;
+
+            let pageNo = parseInt(req.query.page, 10);
+
+            if (isNaN(pageNo) || pageNo < 1) {
+                pageNo = 1;
+            }
+
+            let limit = parseInt(req.query.limit, 10);
+
+            if (isNaN(limit)) {
+                limit = 10;
+            } else if (limit > 50) {
+                limit = 50;
+            } else if (limit < 1) {
+                limit = 1;
+            }
+
+            let offset = pageNo - 1;
+
+            let query = Article
+                .query();
+
+            if (search != undefined) {
+                query.where('name', 'like', '%' + search + '%');
+            }
+
+            if (sort != undefined) {
+                if (order != undefined) {
+                    query.orderBy(sort, order);
+                }
+
+            }
+
+            let articles = await query
+                .select(
+                    'articles.*',
+                    raw(`case when bookmarks.id IS NULL then false else true end as "bookmarked"`)
+                )
+                .joinRelation('bookmarks')
+                .eager('user')
+                .where({ status: true, 'articles.user_id': authorId })
+                .page(offset, limit)
+                .debug(true);
+
+            let response = {
+                data: articles.results,
+                paged: {
+                    page        : pageNo,
+                    pageSize    : limit,
+                    rowCount    : articles.total,
+                    pageCount   : Math.ceil(articles.total / limit)
                 }
             };
 
@@ -372,52 +420,6 @@ export class ArticleController {
         });
     }
 
-    // public async update(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         let hotel = await Hotel
-    //             .query()
-    //             .findById(req.params.id).debug(true);
-
-    //         let authorUpdate = await Hotel
-    //             .query()
-    //             .patch({
-    //                 name            : req.body.name         || hotel.name,
-    //                 description     : req.body.description  || hotel.description,
-    //                 logo            : req.body.logo         || hotel.logo,
-    //                 backdrop        : req.body.backdrop     || hotel.backdrop,
-    //                 parking         : req.body.parking      || hotel.parking,
-    //                 opening_time    : req.body.opening_time || hotel.opening_time,
-    //                 closing_time    : req.body.closing_time || hotel.closing_time,
-    //                 phone           : req.body.phone        || hotel.phone,
-    //                 location        : req.body.location     || hotel.location,
-    //                 lat             : req.body.lat          || hotel.lat,
-    //                 lng             : req.body.lng          || hotel.lng,
-    //                 modified_date   : new Date()
-    //             })
-    //             .where({ id: req.params.id });
-
-    //         res.status(204).json(authorUpdate);
-
-    //     } catch (error) {
-    //         next({ status: 400, message: error });
-    //     }
-    // }
-
-    // public async delete(req: Request, res: Response, next: NextFunction) {
-
-    //     try {
-    //         let hotelDelete = await Hotel.query().patch(
-    //             {
-    //                 status: false,
-    //             })
-    //             .where({ id: req.params.id });
-
-    //         res.status(204).json("Hotel successfully deleted")
-    //     } catch (error) {
-    //         next({ status: 400, message: error });
-    //     }
-    // }
-
     public async clap(req: Request, res: Response, next: NextFunction) {
         try {
             if (req.body.clap) {
@@ -476,11 +478,87 @@ export class ArticleController {
         }
     }
 
-    // public async getFavs(req: Request, res: Response, next: NextFunction){
 
+
+    initRoutes() {
+        this.router.get('/'                     , auth.checkIfAuthenticated, this.get_all);
+        this.router.post('/'                    , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.create);        
+        this.router.get('/:slug'                , this.get_by_slug);
+        this.router.get('/author/:authorId'     , this.get_by_author);
+        this.router.get('/bookmark/:authorId'   , auth.checkIfAuthenticated, this.get_bookmarked_article);
+        this.router.post('/bookmark'            , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.bookmark);
+        this.router.post('/mystories'           , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.my_stories);
+        this.router.post('/clap'                , this.clap);        
+    }
+
+}
+
+// Create the HeroRouter, and export its configured Express.Router
+export default new ArticleController().router;
+
+
+// SELECT `photos`.*, IF(`likes`.`id` IS NULL, 'no', 'yes') as `he_likes_it`
+// FROM `photos`
+// LEFT JOIN `likes` on `likes`.`photo_id` = `photos`.`id` AND `likes`.`user_id` = 123
+// ORDER BY `photos`.`created_at` DESC
+// LIMIT 0,5
+
+
+// endpoints
+// (get)    api/v1/articles/            --> get all articles
+// (post)   api/v1/articles/            --> create and article
+// (get)    api/v1/articles/{slug}      --> get one article based on article slug
+// (post)   api/v1/articles/clap        --> create clap based on particular user id and article id
+// (post)   api/v1/articles/bookmark    --> create bookmark based on particular user id and article id
+// (get)    api/v1/articles/bookmark    --> get bookmarked articles for particular user id
+
+// public async update(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         let hotel = await Hotel
+    //             .query()
+    //             .findById(req.params.id).debug(true);
+
+    //         let authorUpdate = await Hotel
+    //             .query()
+    //             .patch({
+    //                 name            : req.body.name         || hotel.name,
+    //                 description     : req.body.description  || hotel.description,
+    //                 logo            : req.body.logo         || hotel.logo,
+    //                 backdrop        : req.body.backdrop     || hotel.backdrop,
+    //                 parking         : req.body.parking      || hotel.parking,
+    //                 opening_time    : req.body.opening_time || hotel.opening_time,
+    //                 closing_time    : req.body.closing_time || hotel.closing_time,
+    //                 phone           : req.body.phone        || hotel.phone,
+    //                 location        : req.body.location     || hotel.location,
+    //                 lat             : req.body.lat          || hotel.lat,
+    //                 lng             : req.body.lng          || hotel.lng,
+    //                 modified_date   : new Date()
+    //             })
+    //             .where({ id: req.params.id });
+
+    //         res.status(204).json(authorUpdate);
+
+    //     } catch (error) {
+    //         next({ status: 400, message: error });
+    //     }
     // }
 
-    // public async favs(req: Request, res: Response, next: NextFunction){
+    // public async delete(req: Request, res: Response, next: NextFunction) {
+
+    //     try {
+    //         let hotelDelete = await Hotel.query().patch(
+    //             {
+    //                 status: false,
+    //             })
+    //             .where({ id: req.params.id });
+
+    //         res.status(204).json("Hotel successfully deleted")
+    //     } catch (error) {
+    //         next({ status: 400, message: error });
+    //     }
+    // }
+
+// public async favs(req: Request, res: Response, next: NextFunction){
     //     try {
     //         if(!req.body.fav){
     //             let favCreate = await HotelFav
@@ -553,41 +631,10 @@ export class ArticleController {
 
     // }
 
-    initRoutes() {
-        // this.router.get('/', auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN']), this.getAll);
-        this.router.get('/', auth.checkIfAuthenticated, this.getAll);
-        this.router.post('/', auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.create);
-        this.router.get('/:slug', this.getBySlug);
-        this.router.get('/author/:authorId', this.getByAuthor);
-        this.router.get('/bookmark/:authorId', auth.checkIfAuthenticated, this.getBookmarkedArticle);
-        // this.router.get('/:id'              , this.getOne);
-        // this.router.put('/:id'              , this.update);
-        // this.router.delete('/:id'           , this.delete);
-        this.router.post('/clap', this.clap);
-        this.router.post('/bookmark', auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.bookmark);
-        // this.router.get('/favs'             , this.getFavs);
-        // this.router.post('/favs'            , this.favs);
-        // this.router.get('/reviews/:hotelId' , this.getReviews);
-        // this.router.post('/reviews'         , this.createReviews);
-    }
-
-}
-
-// Create the HeroRouter, and export its configured Express.Router
-export default new ArticleController().router;
-
-
-// SELECT `photos`.*, IF(`likes`.`id` IS NULL, 'no', 'yes') as `he_likes_it`
-// FROM `photos`
-// LEFT JOIN `likes` on `likes`.`photo_id` = `photos`.`id` AND `likes`.`user_id` = 123
-// ORDER BY `photos`.`created_at` DESC
-// LIMIT 0,5
-
-
-// endpoints
-// (get) api/v1/articles/ -> get all articles
-// (post) api/v1/articles/ -> create and article
-// (get) api/v1/articles/{slug} -> get one article based on article slug
-// (post) api/v1/articles/clap -> create clap based on particular user id and article id
-// (post) api/v1/articles/bookmark -> create bookmark based on particular user id and article id
-// (get) api/v1/articles/bookmark -> get bookmarked articles for particular user id
+    // this.router.get('/favs'             , this.getFavs);
+    // this.router.post('/favs'            , this.favs);
+    // this.router.get('/reviews/:hotelId' , this.getReviews);
+    // this.router.post('/reviews'         , this.createReviews);
+    // this.router.get('/:id'              , this.getOne);
+    // this.router.put('/:id'              , this.update);
+    // this.router.delete('/:id'           , this.delete);
