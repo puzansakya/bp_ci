@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 
 // stores
 import { Store } from '@ngrx/store';
@@ -18,6 +18,10 @@ import { ScrollEvent } from '../../../scroll-event/scroll.directive';
 
 // services
 import { SeoService } from '../../../core/services';
+
+// platform
+import { PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-landing',
@@ -41,7 +45,8 @@ export class LandingComponent implements OnInit, OnDestroy {
   constructor(
     private articleStore: Store<fromArticleStore.ArticleState>,
     private authStore: Store<fromAuthStore.AuthState>,
-    private seo: SeoService
+    private seo: SeoService,
+    @Inject(PLATFORM_ID) public platformId: Object,
   ) { }
 
   ngOnInit() {
@@ -52,8 +57,10 @@ export class LandingComponent implements OnInit, OnDestroy {
     ).subscribe((logged: boolean) => {
       this.isLoggedIn = logged;
     });
-    // dispatch action to load articles
-    this.articleStore.dispatch(new fromArticleStore.LoadArticles(1));
+    if (isPlatformBrowser(this.platformId)) {
+      // dispatch action to load articles
+      this.articleStore.dispatch(new fromArticleStore.LoadArticles(1));
+    }
     // store the articles observable
     this.loading$ = this.articleStore.select(fromArticleStore.getArticleLoading);
     // store the loading observable
