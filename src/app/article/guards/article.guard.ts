@@ -31,7 +31,7 @@ export class ArticleGuard implements CanActivate {
         private seo: SeoService
     ) { }
 
-    getFromStoreOrAPI(slug: string): Observable<any> {
+    getFromStoreOrAPI(slug: string): Observable<boolean> {
         return this.articleStore
             .select(getArticle).pipe(
                 tap((article: Article) => {                    

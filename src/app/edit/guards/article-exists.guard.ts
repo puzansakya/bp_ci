@@ -15,40 +15,40 @@ import {
 } from 'rxjs/operators';
 import {
     of,
-    Observable
+    Observable,
+    forkJoin,
+    combineLatest
 } from 'rxjs';
 
 // store imports
 import * as fromArticleStore from '../../root-store/article-store';
 import * as fromAuthStore from '../../root-store/auth-store';
 
-import { SeoService } from '../../core/services';
-import { Article } from '../../core/models/article.model';
-import { User } from '../../core/models/user.model';
-
 @Injectable()
 export class ArticleExistsGuard implements CanActivate {
 
     constructor(
         private articleStore: Store<fromArticleStore.ArticleState>,
-        private authStore: Store<fromAuthStore.AuthState>,
-        private seo: SeoService
+        private authStore: Store<fromAuthStore.AuthState>
     ) { }
 
-    getFromStoreOrAPI(slug: string): Observable<any> {
-        return this.authStore.select(fromAuthStore.getAuthUser).pipe(
-            tap((user: User) => {
-                if (user) {
+    getFromStoreOrAPI(slug: string): Observable<boolean> {
+        return combineLatest(
+            this.articleStore.select(fromArticleStore.getArticle),
+            this.authStore.select(fromAuthStore.getAuthUser)
+        ).pipe(
+            tap(([article, user]) => {
+                if (!article || (article && article.slug !== slug)) {
                     this.articleStore.dispatch(new fromArticleStore.LoadArticle(slug));
-                } else {
+                }
+                if (!user) {
                     this.authStore.dispatch(new fromAuthStore.Authenticated);
                 }
             }),
-            map(() => this.articleStore.select(fromArticleStore.getArticle)), // <-- dispatch loadbookmark action and return articleselectobservable
-            switchMap((article) => article.pipe(
-                take(1),
-                filter((article: Article) => article.user.id === user.id),
-            ))
+            map(([article, user]) => {
+                if (article) return article.user.id === user.id;
+            }),
+            take(1)
         );
     }
 
@@ -56,6 +56,6 @@ export class ArticleExistsGuard implements CanActivate {
         return this.getFromStoreOrAPI(route.params.slug).pipe(
             switchMap(() => of(true)),
             catchError(() => of(false))
-        );
+        );        
     }
 }
