@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 // store
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { reducers, effects } from './index';
+import { reducers, effects } from '.';
 
 @NgModule({
   declarations: [],

@@ -67,7 +67,7 @@ class App {
     public express      : express.Application;
 
     constructor() {        
-        Model.knex(Knex(objection.production));
+        Model.knex(Knex(objection.development));
 
         this.httpFlush  = new HttpFlush();
         this.express    = express();

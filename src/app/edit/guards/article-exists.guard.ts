@@ -24,7 +24,7 @@ import { Article } from '../../core/models/article.model';
 import { getArticle } from '../../root-store/article-store';
 
 @Injectable()
-export class ArticleGuard implements CanActivate {
+export class ArticleExistsGuard implements CanActivate {
 
     constructor(
         private articleStore: Store<fromArticleStore.ArticleState>,
@@ -35,16 +35,8 @@ export class ArticleGuard implements CanActivate {
         return this.articleStore
             .select(getArticle).pipe(
                 tap((article: Article) => {                    
-                    if (!article || (article && article.slug !== slug)) {
-                        console.log('called dispatch from ArticleGuard');
+                    if (!article || (article && article.slug !== slug)) {                        
                         this.articleStore.dispatch(new fromArticleStore.LoadArticle(slug));
-                    } else {
-                        this.seo.generateTags({
-                            title: article.heading,
-                            description: article.description,
-                            image: article.backdrop,
-                            slug: article.slug
-                        });
                     }
                 }),
                 filter((data: any) => { return data && data.slug === slug }),

@@ -11,19 +11,24 @@ import {
     map,
     switchMap,
     catchError,
-    debounceTime
+    debounceTime,
+    exhaustMap
 } from 'rxjs/operators';
 
 import * as articleActions from '../actions/article.actions';
 import * as fromServices from '../../../core/services';
 import { ToastrService } from 'ngx-toastr';
 
+import * as fromRoot from '../../router-store';
+import { Router } from '@angular/router';
+
 @Injectable()
 export class ArticleEffects {
     constructor(
         private actions$: Actions,
         private articleService: fromServices.ArticleService,
-        private toastr: ToastrService
+        private toastr: ToastrService,
+        private router: Router
     ) { }
 
     @Effect()
@@ -61,7 +66,7 @@ export class ArticleEffects {
         // debounceTime(debounce, scheduler),
         ofType(articleActions.LOAD_BOOKMARK_ARTICLES),
         map((action: articleActions.LoadBookmarkArticles) => action.payload),
-        switchMap((authorId: number) => {            
+        switchMap((authorId: number) => {
             return this.articleService
                 .getBookmarkedArticles(authorId)
                 .pipe(
@@ -72,19 +77,48 @@ export class ArticleEffects {
     );
 
     @Effect()
-    loadArticle$ = this.actions$.pipe(
+    loadMyStoriesArticles$ = ({ debounce = 3000, scheduler = asyncScheduler } = {}): Observable<Action> => this.actions$.pipe(
         // debounceTime(debounce, scheduler),
+        ofType(articleActions.LOAD_MYSTORIES_ARTICLES),
+        map((action: articleActions.LoadBookmarkArticles) => action.payload),
+        switchMap((authorId: number) => {
+            return this.articleService
+                .getMyStoriesArticles(authorId)
+                .pipe(
+                    map(articles => new articleActions.LoadMyStoriesArticlesSuccess(articles)),
+                    catchError(error => of(new articleActions.LoadMyStoriesArticlesFail(error)))
+                );
+        })
+    );
+
+    @Effect()
+    loadArticle$ = this.actions$.pipe(
         ofType(articleActions.LOAD_ARTICLE),
         map((action: articleActions.LoadArticle) => action.payload),
-        switchMap((slug: string) => {
+        exhaustMap((slug: string) => { // exhaustMap --> causee we want first proces to complete and igonre new processes
             return this.articleService
                 .getArticle(slug)
                 .pipe(
                     map(article => new articleActions.LoadArticleSuccess(article)),
-                    catchError(error => of(new articleActions.LoadArticleFail(error)))
+                    catchError(error => {                    
+                        return of(new articleActions.LoadArticleFail(error));
+                    })
                 );
         })
     );
+
+    @Effect()
+    loadArticleFail$ = this.actions$
+        .pipe(
+            ofType(articleActions.LOAD_ARTICLE_FAIL),
+            map((action: articleActions.LoadArticleFail) => action.payload),
+            map(error => {
+                console.log('called failed');
+                return new fromRoot.Go({
+                    path: ['404'],
+                });                
+            })
+        );
 
     @Effect()
     createArticle$ = this.actions$.pipe(

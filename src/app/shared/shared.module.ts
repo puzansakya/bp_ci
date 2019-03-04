@@ -10,9 +10,9 @@ import * as fromAnimations from './animations';
 // directives
 import * as fromDirectives from './directives';
 
-import { RouterModule } from '@angular/router';
-import { AuthModule } from '../auth/auth.module';
-import { NgbDropdownModule } from '../dropdown/dropdown.module';
+import { RouterModule }       from '@angular/router';
+import { AuthModule }         from '../auth/auth.module';
+import { NgbDropdownModule }  from '../dropdown/dropdown.module';
 
 @NgModule({
   imports: [
@@ -23,7 +23,7 @@ import { NgbDropdownModule } from '../dropdown/dropdown.module';
   ],
   declarations: [
     ...fromComponents.components,
-    ...fromDirectives.directives
+    ...fromDirectives.directives    
   ],
   exports: [
     ...fromComponents.components,

@@ -25,10 +25,7 @@ export class AuthorExistsGuard implements CanActivate {
     getFromStoreOrAPI(authorId: number): Observable<any> {
         return this.articleStore
             .select(getArticles).pipe(
-                tap((articles: Article[]) => {
-                    // if (articles) {
-                    //     console.log(articles);
-                    // }
+                tap((articles: Article[]) => {                    
                     if (!articles || (articles && !articles.length)) {
                         this.articleStore.dispatch(new fromArticleStore.LoadAuthorArticles(authorId));
                     }
@@ -39,13 +36,11 @@ export class AuthorExistsGuard implements CanActivate {
     }
 
     canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {        
-        this.articleStore.dispatch(new fromArticleStore.Reset())
-        // this.articleStore.dispatch(new fromArticleStore.LoadAuthorArticles(route.params.authorId));
+        this.articleStore.dispatch(new fromArticleStore.Reset())        
         return this.getFromStoreOrAPI(route.params.authorId).pipe(
             switchMap(() => of(true)),
             catchError(() => of(false))
         );
 
-        // return of(true);
     }
 }

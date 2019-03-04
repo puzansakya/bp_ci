@@ -104,6 +104,27 @@ export class LoadBookmarkArticlesFail implements Action {
     constructor(public payload: any) { }
 }
 
+
+// load mystories collection
+export const LOAD_MYSTORIES_ARTICLES = '[Articles] Load MyStories Articles';
+export const LOAD_MYSTORIES_ARTICLES_SUCCESS = '[Articles] Load MyStories Articles Success';
+export const LOAD_MYSTORIES_ARTICLES_FAIL = '[Articles] Load MyStories Articles Fail';
+
+export class LoadMyStoriesArticles implements Action {
+    readonly type = LOAD_MYSTORIES_ARTICLES;
+    constructor(public payload: number) {        }
+}
+
+export class LoadMyStoriesArticlesSuccess implements Action {
+    readonly type = LOAD_MYSTORIES_ARTICLES_SUCCESS;
+    constructor(public payload: Articles) { }
+}
+
+export class LoadMyStoriesArticlesFail implements Action {
+    readonly type = LOAD_MYSTORIES_ARTICLES_FAIL;
+    constructor(public payload: any) { }
+}
+
 // create bookmark
 export const BOOKMARK = '[Articles] Bookmark';
 export const BOOKMARK_FAIL = '[Articles] Bookmark Fail';
@@ -148,4 +169,5 @@ export type ArticleAction =
     | Bookmark | BookmarkSuccess | BookmarkFail | BookmarkRemove
     | LoadAuthorArticles | LoadAuthorArticlesSuccess | LoadAuthorArticlesFail
     | LoadBookmarkArticles | LoadBookmarkArticlesSuccess | LoadBookmarkArticlesFail
+    | LoadMyStoriesArticles | LoadMyStoriesArticlesSuccess | LoadMyStoriesArticlesFail
     | Reset;

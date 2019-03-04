@@ -12,6 +12,7 @@ import { Article } from '../../../core/models/article.model';
 export class CardComponent implements OnInit {
 
   @Input() article: any;
+  @Input() edit: boolean;
   @Output() bookmark: EventEmitter<Article> = new EventEmitter();
 
   constructor() { }

@@ -139,7 +139,12 @@ export class ArticleController {
                 .eager('user')
                 .debug(true);
 
-            res.status(200).json(articleSlug);
+            if(articleSlug){
+                res.status(200).json(articleSlug);
+            }else{
+                next({ status: 400, message: 'not found' });
+            }
+            
 
         } catch (error) {
             next({ status: 400, message: error });
@@ -286,7 +291,11 @@ export class ArticleController {
             let search = req.query.search;
             let order = req.query.order;
             let sort = req.query.sort;
-            let authorId = req.params.authorId;
+            
+            const user = req['user'];
+            if (!user) {
+                next({ status: 400, message: 'user not found' });
+            }
 
             let pageNo = parseInt(req.query.page, 10);
 
@@ -327,7 +336,7 @@ export class ArticleController {
                 )
                 .joinRelation('bookmarks')
                 .eager('user')
-                .where({ status: true, 'articles.user_id': authorId })
+                .where({ status: true, 'articles.user_id': user.sub })
                 .page(offset, limit)
                 .debug(true);
 
@@ -482,12 +491,12 @@ export class ArticleController {
 
     initRoutes() {
         this.router.get('/'                     , auth.checkIfAuthenticated, this.get_all);
-        this.router.post('/'                    , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.create);        
+        this.router.get('/mystories'            , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.my_stories);        
         this.router.get('/:slug'                , this.get_by_slug);
         this.router.get('/author/:authorId'     , this.get_by_author);
         this.router.get('/bookmark/:authorId'   , auth.checkIfAuthenticated, this.get_bookmarked_article);
-        this.router.post('/bookmark'            , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.bookmark);
-        this.router.post('/mystories'           , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.my_stories);
+        this.router.post('/'                    , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.create);        
+        this.router.post('/bookmark'            , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.bookmark);        
         this.router.post('/clap'                , this.clap);        
     }
 
@@ -506,11 +515,12 @@ export default new ArticleController().router;
 
 // endpoints
 // (get)    api/v1/articles/            --> get all articles
-// (post)   api/v1/articles/            --> create and article
+// (post)   api/v1/articles/            --> create an article
 // (get)    api/v1/articles/{slug}      --> get one article based on article slug
 // (post)   api/v1/articles/clap        --> create clap based on particular user id and article id
 // (post)   api/v1/articles/bookmark    --> create bookmark based on particular user id and article id
 // (get)    api/v1/articles/bookmark    --> get bookmarked articles for particular user id
+// (get)    api/v1/articles/mystories   --> get all articles for particular user id
 
 // public async update(req: Request, res: Response, next: NextFunction) {
     //     try {

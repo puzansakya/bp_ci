@@ -153,6 +153,29 @@ export function reducer(
                 loaded: false,
             };
         }
+        case fromArticle.LOAD_MYSTORIES_ARTICLES: {
+            return {
+                ...state,
+                loading: true,
+            };
+        }
+        case fromArticle.LOAD_MYSTORIES_ARTICLES_SUCCESS: {
+            const articles = action.payload;
+            const paged = articles.paged;
+            return featureAdapter.addAll(articles.data, {
+                ...state,
+                loading: false,
+                loaded: true,
+                paged
+            });
+        }
+        case fromArticle.LOAD_MYSTORIES_ARTICLES_FAIL: {
+            return {
+                ...state,
+                loading: false,
+                loaded: false,
+            };
+        }
         case fromArticle.LOAD_ARTICLE: {
             return {
                 ...state,
