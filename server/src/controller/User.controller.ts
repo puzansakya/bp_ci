@@ -9,10 +9,8 @@ export class UserController {
     router: Router;
 
     constructor() {
-
         this.router = Router();
         this.initRoutes();
-
     }
 
     public async login(req: Request, res: Response, next: NextFunction) {

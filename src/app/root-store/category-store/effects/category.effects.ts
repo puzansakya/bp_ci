@@ -29,6 +29,7 @@ export class CategoriesEffects {
         debounceTime(debounce, scheduler),
         ofType(categoryActions.LOAD_CATEGORY),
         switchMap(() => {
+            console.log('LoadCategory');
             return this.categoryService
                 .getCategory()
                 .pipe(
@@ -53,14 +54,14 @@ export class CategoriesEffects {
     );
 
     @Effect()
-    updatePizza$ = this.actions$.pipe(
+    updateCategory$ = this.actions$.pipe(
         ofType(categoryActions.UPDATE_CATEGORY),
         map((action: categoryActions.updatecategory) => action.payload),
-        switchMap(pizza => {
+        switchMap(category => {
             return this.categoryService
-                .updateCategory(pizza)
+                .updateCategory(category)
                 .pipe(
-                    map(() => new categoryActions.updatecategorySuccess(pizza)),
+                    map(() => new categoryActions.updatecategorySuccess(category)),
                     catchError(error => of(new categoryActions.updatecategoryFail(error)))
                 );
         })

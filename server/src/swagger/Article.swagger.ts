@@ -16,6 +16,20 @@
  * 
  */
 
+ /**
+ * @swagger
+ * definitions:
+ *   ArticleUpdate:
+ *     properties:
+ *       description:
+ *         type: string
+ *       content:
+ *         type: string
+ *       status:
+ *         type: boolean
+ * 
+ */
+
   /**
  * @swagger
  * definitions:
@@ -263,6 +277,34 @@
  *     security:
  *       - jwt: []
  */
+
+ 
+/**
+ * @swagger
+ * /api/v1/articles/{id}:
+ *   put:
+ *     tags:
+ *       - Articles
+ *     description: Updates an article
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: Article's id
+ *         in: path
+ *         required: true
+ *         type: integer
+ *       - name: Article
+ *         description: Article object
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/ArticleUpdate'
+ *     responses:
+ *       200:
+ *         description: Successfully updated
+ */
+
 
 
  /**

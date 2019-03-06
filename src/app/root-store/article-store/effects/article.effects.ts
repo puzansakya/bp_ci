@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Action } from '@ngrx/store';
+import { Actions, Effect, ofType }  from '@ngrx/effects';
+import { Action }                   from '@ngrx/store';
 import {
     of,
     asyncScheduler,
@@ -15,20 +15,19 @@ import {
     exhaustMap
 } from 'rxjs/operators';
 
-import * as articleActions from '../actions/article.actions';
-import * as fromServices from '../../../core/services';
-import { ToastrService } from 'ngx-toastr';
+import * as articleActions  from '../actions/article.actions';
+import * as fromServices    from '../../../core/services';
+import { ToastrService }    from 'ngx-toastr';
 
-import * as fromRoot from '../../router-store';
-import { Router } from '@angular/router';
+// store
+import * as fromRoot        from '../../router-store';
 
 @Injectable()
 export class ArticleEffects {
     constructor(
-        private actions$: Actions,
-        private articleService: fromServices.ArticleService,
-        private toastr: ToastrService,
-        private router: Router
+        private actions$        : Actions,
+        private articleService  : fromServices.ArticleService,
+        private toastr          : ToastrService        
     ) { }
 
     @Effect()
@@ -47,8 +46,7 @@ export class ArticleEffects {
     );
 
     @Effect()
-    loadAuthorArticles$ = ({ debounce = 3000, scheduler = asyncScheduler } = {}): Observable<Action> => this.actions$.pipe(
-        // debounceTime(debounce, scheduler),
+    loadAuthorArticles$ = ({ debounce = 3000, scheduler = asyncScheduler } = {}): Observable<Action> => this.actions$.pipe(        
         ofType(articleActions.LOAD_AUTHOR_ARTICLES),
         map((action: articleActions.LoadArticles) => action.payload),
         switchMap((authorId: number) => {
@@ -62,8 +60,7 @@ export class ArticleEffects {
     );
 
     @Effect()
-    loadBookmarkedArticles$ = ({ debounce = 3000, scheduler = asyncScheduler } = {}): Observable<Action> => this.actions$.pipe(
-        // debounceTime(debounce, scheduler),
+    loadBookmarkedArticles$ = ({ debounce = 3000, scheduler = asyncScheduler } = {}): Observable<Action> => this.actions$.pipe(    
         ofType(articleActions.LOAD_BOOKMARK_ARTICLES),
         map((action: articleActions.LoadBookmarkArticles) => action.payload),
         switchMap((authorId: number) => {
@@ -77,8 +74,7 @@ export class ArticleEffects {
     );
 
     @Effect()
-    loadMyStoriesArticles$ = ({ debounce = 3000, scheduler = asyncScheduler } = {}): Observable<Action> => this.actions$.pipe(
-        // debounceTime(debounce, scheduler),
+    loadMyStoriesArticles$ = ({ debounce = 3000, scheduler = asyncScheduler } = {}): Observable<Action> => this.actions$.pipe(        
         ofType(articleActions.LOAD_MYSTORIES_ARTICLES),
         map((action: articleActions.LoadBookmarkArticles) => action.payload),
         switchMap((authorId: number) => {
@@ -135,6 +131,26 @@ export class ArticleEffects {
                     catchError(error => {
                         this.toastr.error('Article creation failed!');
                         return of(new articleActions.CreateArticleFail(error))
+                    })
+                );
+        })
+    );
+
+    @Effect()
+    updateArticle$ = this.actions$.pipe(
+        ofType(articleActions.UPDATE_ARTICLE),
+        map((action: articleActions.UpdateArticle) => action.payload),
+        switchMap(payload => {
+            return this.articleService
+                .updateArticle(payload)
+                .pipe(
+                    map(article => {
+                        this.toastr.success('Article udpdated!');
+                        return new articleActions.UpdateArticleSuccess(article);
+                    }),
+                    catchError(error => {
+                        this.toastr.error('Article update failed!');
+                        return of(new articleActions.UpdateArticleFail(error))
                     })
                 );
         })

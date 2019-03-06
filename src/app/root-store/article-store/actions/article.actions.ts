@@ -1,11 +1,11 @@
-import { Action } from '@ngrx/store';
-import { Article } from '../../../core/models/article.model';
+import { Action }   from '@ngrx/store';
+import { Article }  from '../../../core/models/article.model';
 import { Articles } from '../../../core/models/articles.model';
 
 // load article collection
-export const LOAD_ARTICLES = '[Articles] Load Articles';
-export const LOAD_ARTICLES_SUCCESS = '[Articles] Load Articles Success';
-export const LOAD_ARTICLES_FAIL = '[Articles] Load Articles Fail';
+export const LOAD_ARTICLES          = '[Articles] Load Articles';
+export const LOAD_ARTICLES_SUCCESS  = '[Articles] Load Articles Success';
+export const LOAD_ARTICLES_FAIL     = '[Articles] Load Articles Fail';
 
 export class LoadArticles implements Action {
     readonly type = LOAD_ARTICLES;
@@ -23,9 +23,9 @@ export class LoadArticlesFail implements Action {
 }
 
 // load article collection
-export const LOAD_AUTHOR_ARTICLES = '[Articles] Load Author Articles';
-export const LOAD_AUTHOR_ARTICLES_SUCCESS = '[Articles] Load Author Articles Success';
-export const LOAD_AUTHOR_ARTICLES_FAIL = '[Articles] Load Author Articles Fail';
+export const LOAD_AUTHOR_ARTICLES           = '[Articles] Load Author Articles';
+export const LOAD_AUTHOR_ARTICLES_SUCCESS   = '[Articles] Load Author Articles Success';
+export const LOAD_AUTHOR_ARTICLES_FAIL      = '[Articles] Load Author Articles Fail';
 
 export class LoadAuthorArticles implements Action {
     readonly type = LOAD_AUTHOR_ARTICLES;
@@ -43,9 +43,9 @@ export class LoadAuthorArticlesFail implements Action {
 }
 
 // load single article
-export const LOAD_ARTICLE = '[Articles] Load Article';
-export const LOAD_ARTICLE_SUCCESS = '[Articles] Load Article Success';
-export const LOAD_ARTICLE_FAIL = '[Articles] Load Article Fail';
+export const LOAD_ARTICLE           = '[Articles] Load Article';
+export const LOAD_ARTICLE_SUCCESS   = '[Articles] Load Article Success';
+export const LOAD_ARTICLE_FAIL      = '[Articles] Load Article Fail';
 
 export class LoadArticle implements Action {
     readonly type = LOAD_ARTICLE;
@@ -64,8 +64,8 @@ export class LoadArticleFail implements Action {
 
 
 // create article
-export const CREATE_ARTICLE = '[Articles] Create Article';
-export const CREATE_ARTICLE_FAIL = '[Articles] Create Article Fail';
+export const CREATE_ARTICLE         = '[Articles] Create Article';
+export const CREATE_ARTICLE_FAIL    = '[Articles] Create Article Fail';
 export const CREATE_ARTICLE_SUCCESS = '[Articles] Create Article Success';
 
 export class CreateArticle implements Action {
@@ -84,10 +84,31 @@ export class CreateArticleFail implements Action {
 }
 
 
+// update article
+export const UPDATE_ARTICLE         = '[Articles] Update Article';
+export const UPDATE_ARTICLE_FAIL    = '[Articles] Update Article Fail';
+export const UPDATE_ARTICLE_SUCCESS = '[Articles] Update Article Success';
+
+export class UpdateArticle implements Action {
+    readonly type = UPDATE_ARTICLE;
+    constructor(public payload: Article) { }
+}
+
+export class UpdateArticleSuccess implements Action {
+    readonly type = UPDATE_ARTICLE_SUCCESS;
+    constructor(public payload: Article) { }
+}
+
+export class UpdateArticleFail implements Action {
+    readonly type = UPDATE_ARTICLE_FAIL;
+    constructor(public payload: any) { }
+}
+
+
 // load article collection
-export const LOAD_BOOKMARK_ARTICLES = '[Articles] Load Bookmark Articles';
+export const LOAD_BOOKMARK_ARTICLES         = '[Articles] Load Bookmark Articles';
 export const LOAD_BOOKMARK_ARTICLES_SUCCESS = '[Articles] Load Bookmark Articles Success';
-export const LOAD_BOOKMARK_ARTICLES_FAIL = '[Articles] Load Bookmark Articles Fail';
+export const LOAD_BOOKMARK_ARTICLES_FAIL    = '[Articles] Load Bookmark Articles Fail';
 
 export class LoadBookmarkArticles implements Action {
     readonly type = LOAD_BOOKMARK_ARTICLES;
@@ -106,9 +127,9 @@ export class LoadBookmarkArticlesFail implements Action {
 
 
 // load mystories collection
-export const LOAD_MYSTORIES_ARTICLES = '[Articles] Load MyStories Articles';
-export const LOAD_MYSTORIES_ARTICLES_SUCCESS = '[Articles] Load MyStories Articles Success';
-export const LOAD_MYSTORIES_ARTICLES_FAIL = '[Articles] Load MyStories Articles Fail';
+export const LOAD_MYSTORIES_ARTICLES            = '[Articles] Load MyStories Articles';
+export const LOAD_MYSTORIES_ARTICLES_SUCCESS    = '[Articles] Load MyStories Articles Success';
+export const LOAD_MYSTORIES_ARTICLES_FAIL       = '[Articles] Load MyStories Articles Fail';
 
 export class LoadMyStoriesArticles implements Action {
     readonly type = LOAD_MYSTORIES_ARTICLES;
@@ -126,9 +147,9 @@ export class LoadMyStoriesArticlesFail implements Action {
 }
 
 // create bookmark
-export const BOOKMARK = '[Articles] Bookmark';
-export const BOOKMARK_FAIL = '[Articles] Bookmark Fail';
-export const BOOKMARK_SUCCESS = '[Articles] Bookmark Success';
+export const BOOKMARK           = '[Articles] Bookmark';
+export const BOOKMARK_FAIL      = '[Articles] Bookmark Fail';
+export const BOOKMARK_SUCCESS   = '[Articles] Bookmark Success';
 
 export class Bookmark implements Action {
     readonly type = BOOKMARK;
@@ -163,11 +184,12 @@ export class Reset implements Action {
 
 // action types
 export type ArticleAction =
-    | LoadArticle | LoadArticleFail | LoadArticleSuccess
-    | LoadArticles | LoadArticlesSuccess | LoadArticlesFail
-    | CreateArticle | CreateArticleSuccess | CreateArticleFail
-    | Bookmark | BookmarkSuccess | BookmarkFail | BookmarkRemove
-    | LoadAuthorArticles | LoadAuthorArticlesSuccess | LoadAuthorArticlesFail
-    | LoadBookmarkArticles | LoadBookmarkArticlesSuccess | LoadBookmarkArticlesFail
-    | LoadMyStoriesArticles | LoadMyStoriesArticlesSuccess | LoadMyStoriesArticlesFail
+    | LoadArticle           | LoadArticleFail               | LoadArticleSuccess
+    | LoadArticles          | LoadArticlesSuccess           | LoadArticlesFail
+    | CreateArticle         | CreateArticleSuccess          | CreateArticleFail
+    | UpdateArticle         | UpdateArticleSuccess          | UpdateArticleFail
+    | Bookmark              | BookmarkSuccess               | BookmarkFail              | BookmarkRemove
+    | LoadAuthorArticles    | LoadAuthorArticlesSuccess     | LoadAuthorArticlesFail
+    | LoadBookmarkArticles  | LoadBookmarkArticlesSuccess   | LoadBookmarkArticlesFail
+    | LoadMyStoriesArticles | LoadMyStoriesArticlesSuccess  | LoadMyStoriesArticlesFail
     | Reset;

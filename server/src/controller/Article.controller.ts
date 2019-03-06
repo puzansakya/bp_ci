@@ -334,7 +334,11 @@ export class ArticleController {
                     'articles.*',
                     raw(`case when bookmarks.id IS NULL then false else true end as "bookmarked"`)
                 )
-                .joinRelation('bookmarks')
+                // .joinRelation('bookmarks')
+                .leftJoin('bookmarks', (join) => {
+                        join.on('bookmarks.article_id', '=', 'articles.id').andOn(raw('bookmarks.user_id = ?', user.sub));
+                    }
+                )
                 .eager('user')
                 .where({ status: true, 'articles.user_id': user.sub })
                 .page(offset, limit)
@@ -409,14 +413,14 @@ export class ArticleController {
                             let articleCreate = await Article
                                 .query()
                                 .insert({
-                                    heading: req.body.heading,
-                                    slug: slug,
-                                    description: req.body.description,
-                                    content: req.body.content,
-                                    backdrop: result.secure_url,
-                                    status: req.body.status,
-                                    user_id: user.sub,
-                                    category_id: req.body.category_id,
+                                    heading     : req.body.heading,
+                                    slug        : slug,
+                                    description : req.body.description,
+                                    content     : req.body.content,
+                                    backdrop    : result.secure_url,
+                                    status      : req.body.status,
+                                    user_id     : user.sub,
+                                    category_id : req.body.category_id,
                                 }).debug(true);
                             res.status(201).json(articleCreate);
                         } catch (error) {
@@ -428,6 +432,29 @@ export class ArticleController {
             }
         });
     }
+
+    public async update(req: Request, res: Response, next: NextFunction) {
+            try {
+                let article = await Article
+                    .query()
+                    .findById(req.params.id).debug(true);
+    
+                let articleUpdate = await Article
+                    .query()
+                    .patch({                                                
+                        description     : req.body.description  || article.description,
+                        content         : req.body.content      || article.content,                        
+                        status          : req.body.status       || article.status,                        
+                        modified_date   : new Date()
+                    })
+                    .where({ id: req.params.id });
+    
+                res.status(204).json(articleUpdate);
+    
+            } catch (error) {
+                next({ status: 400, message: error });
+            }
+        }
 
     public async clap(req: Request, res: Response, next: NextFunction) {
         try {
@@ -487,8 +514,6 @@ export class ArticleController {
         }
     }
 
-
-
     initRoutes() {
         this.router.get('/'                     , auth.checkIfAuthenticated, this.get_all);
         this.router.get('/mystories'            , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.my_stories);        
@@ -498,6 +523,7 @@ export class ArticleController {
         this.router.post('/'                    , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.create);        
         this.router.post('/bookmark'            , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.bookmark);        
         this.router.post('/clap'                , this.clap);        
+        this.router.put('/:id'                  , auth.checkIfAuthenticated, _.partial(auth.checkIfAuthorized, ['ADMIN', 'USER']), this.update);
     }
 
 }

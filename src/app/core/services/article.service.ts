@@ -23,15 +23,15 @@ export class ArticleService {
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
-  getBookmarkedArticles(authorId: number): Observable<Articles> {    
+  getBookmarkedArticles(authorId: number): Observable<Articles> {
     return this.http
       .get<Articles>(`http://localhost:3000/api/v1/articles/bookmark/${authorId}`)
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
-  getMyStoriesArticles(authorId: number): Observable<Articles> {    
+  getMyStoriesArticles(authorId: number): Observable<Articles> {
     return this.http
-      .get<Articles>(`http://localhost:3000/api/v1/articles/bookmark/${authorId}`)
+      .get<Articles>(`http://localhost:3000/api/v1/articles/mystories`)
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
@@ -48,7 +48,7 @@ export class ArticleService {
       formdata.append('backdrop', payload.buffer);
     }
 
-    formdata.append('heading', payload.article.heading);    
+    formdata.append('heading', payload.article.heading);
     formdata.append('description', payload.article.description);
     formdata.append('category_id', payload.article.category_id);
     formdata.append('status', payload.article.status);
@@ -59,6 +59,11 @@ export class ArticleService {
       .pipe(catchError((error: any) => Observable.throw(error.json())));
   }
 
+  updateArticle(article: Article): Observable<Article> {
+    return this.http
+      .put<Article>(`http://localhost:3000/api/v1/articles/${article.id}`, article)
+      .pipe(catchError((error: any) => Observable.throw(error.json())));
+  }
   bookmarkArticle(article: Article) {
     return this.http
       .post<Article>(`http://localhost:3000/api/v1/articles/bookmark`, article)

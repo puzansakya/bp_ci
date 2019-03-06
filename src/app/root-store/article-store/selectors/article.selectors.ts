@@ -1,9 +1,9 @@
-import { createSelector } from '@ngrx/store';
+import { createSelector }   from '@ngrx/store';
 
-import * as fromFeature from '../reducers';
-import * as fromArticles from '../reducers/article.reducer';
+import * as fromFeature     from '../reducers';
+import * as fromArticles    from '../reducers/article.reducer';
 
-import { Article } from '../../../core/models/article.model';
+import { Article }          from '../../../core/models/article.model';
 
 export const getArticlesState = createSelector(
     fromFeature.getArticleState,
@@ -15,11 +15,6 @@ export const getArticleEntities = createSelector(
     fromArticles.getArticleEntities
 );
 
-// export const getArticles = createSelector(
-//     getArticleEntities, 
-//     entities => {
-//     return Object.keys(entities).map(id => entities[parseInt(id, 10)]);
-// });
 export const getArticles: (state: object) => Article[] = fromArticles.featureAdapter.getSelectors(getArticlesState).selectAll;
 
 export const getArticle = createSelector(

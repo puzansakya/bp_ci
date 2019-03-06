@@ -23,16 +23,18 @@ import {
 // store imports
 import * as fromArticleStore from '../../root-store/article-store';
 import * as fromAuthStore from '../../root-store/auth-store';
+import * as fromCategoryStore from '../../root-store/category-store';
 
 @Injectable()
 export class ArticleExistsGuard implements CanActivate {
 
     constructor(
         private articleStore: Store<fromArticleStore.ArticleState>,
-        private authStore: Store<fromAuthStore.AuthState>
+        private authStore: Store<fromAuthStore.AuthState>,
+        public categoryStore: Store<fromCategoryStore.CategoryState>,
     ) { }
 
-    getFromStoreOrAPI(slug: string): Observable<boolean> {
+    getFromStoreOrAPI(slug: string): Observable<any> {
         return combineLatest(
             this.articleStore.select(fromArticleStore.getArticle),
             this.authStore.select(fromAuthStore.getAuthUser)
@@ -45,7 +47,7 @@ export class ArticleExistsGuard implements CanActivate {
                     this.authStore.dispatch(new fromAuthStore.Authenticated);
                 }
             }),
-            map(([article, user]) => {
+            filter(([article, user]) => {
                 if (article) return article.user.id === user.id;
             }),
             take(1)
@@ -53,6 +55,7 @@ export class ArticleExistsGuard implements CanActivate {
     }
 
     canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
+        this.categoryStore.dispatch(new fromCategoryStore.LoadCategory);
         return this.getFromStoreOrAPI(route.params.slug).pipe(
             switchMap(() => of(true)),
             catchError(() => of(false))
