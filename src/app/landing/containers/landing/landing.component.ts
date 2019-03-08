@@ -4,10 +4,11 @@ import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromArticleStore from '../../../root-store/article-store';
 import * as fromAuthStore from '../../../root-store/auth-store';
+import * as fromCategoryStore from '../../../root-store/category-store';
 
 // rxjs
-import { Observable, Subject } from 'rxjs';
-import { takeUntil, take } from 'rxjs/operators';
+import { Observable, Subject, zip } from 'rxjs';
+import { takeUntil, take, tap, filter, switchMap, map, concatMap, mergeMap } from 'rxjs/operators';
 
 
 // models
@@ -22,6 +23,9 @@ import { SeoService } from '../../../core/services';
 // platform
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { LoadCategory } from '../../../root-store/category-store';
+import { getCategoryLoaded } from '../../../root-store/category-store/reducers/category.reducers';
+import { Category } from '../../../core/models/category.model';
 
 @Component({
   selector: 'app-landing',
@@ -30,7 +34,50 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class LandingComponent implements OnInit, OnDestroy {
 
+
+  categoryList = [
+    'How to',
+    'Creativity',
+    'precious',
+    'dark',
+    'calculator',
+    'stale',
+    'phone',
+    'locket',
+    'undesirable',
+    'shivering',
+    'distribution',
+    'government',
+    'breakable',
+    'pass',
+    'How to',
+    'Creativity',
+    'precious',
+    'dark',
+    'calculator',
+    'stale',
+    'phone',
+    'locket',
+    'undesirable',
+    'shivering',
+    'distribution',
+    'government',
+    'breakable',
+    'pass'
+  ]
+
+
+  // for drag scroll
+  hideScrollbar;
+  disabled;
+  xDisabled;
+  yDisabled;
+  leftNavDisabled = false;
+  rightNavDisabled = false;
+  index = 0;
+
   // containers for store observable
+  categories$: Observable<Category[]>;
   articles$: Observable<Article[]>;
   loading$: Observable<boolean>;
 
@@ -45,6 +92,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   constructor(
     private articleStore: Store<fromArticleStore.ArticleState>,
     private authStore: Store<fromAuthStore.AuthState>,
+    private categoryStore: Store<fromCategoryStore.CategoryState>,
     private seo: SeoService,
     @Inject(PLATFORM_ID) public platformId: Object,
   ) { }
@@ -57,14 +105,51 @@ export class LandingComponent implements OnInit, OnDestroy {
     ).subscribe((logged: boolean) => {
       this.isLoggedIn = logged;
     });
-    if (isPlatformBrowser(this.platformId)) {
-      // dispatch action to load articles
-      this.articleStore.dispatch(new fromArticleStore.LoadArticles(1));
-    }
+
+    // load and select categories 
+    // this.categoryStore.select(fromCategoryStore.getCategoriesLoaded)
+    //   .pipe(
+    //     tap(loaded => {
+    //       if (!loaded) {
+    //         this.categoryStore.dispatch(new fromCategoryStore.LoadCategory);
+    //       }
+    //     }),
+    //     filter(loaded => !loaded),
+    //     take(1)
+    //   ).subscribe();
+
+    // this.categoryStore.select(fromCategoryStore.getCategories);
+    // this.categoryStore.select(fromCategoryStore.getCategoriesLoaded).pipe(
+    //   tap(loaded => {
+    //     console.log(loaded);
+    //     if (!loaded) {
+    //       this.categoryStore.dispatch(new fromCategoryStore.LoadCategory);
+    //     }
+    //   }),
+    //   switchMap(loaded => this.articleStore.select(fromArticleStore.getArticleLoaded).pipe(
+    //     tap(articleLoaded => {
+    //       if (!articleLoaded) {
+    //         this.articleStore.dispatch(new fromArticleStore.LoadArticles(1))
+    //       }
+    //     }),
+    //     filter(articleLoaded => !articleLoaded),
+    //     take(1)
+    //   )),
+    //   filter(loaded => !loaded),
+    //   take(1)
+    // );
+
+    // if (isPlatformBrowser(this.platformId)) {
+    //   // dispatch action to load articles
+    //   this.articleStore.dispatch(new fromArticleStore.LoadArticles(1));
+    // }
+    this.zipLoad();
     // store the articles observable
     this.loading$ = this.articleStore.select(fromArticleStore.getArticleLoading);
     // store the loading observable
     this.articles$ = this.articleStore.select(fromArticleStore.getArticles);
+    // store the categories observable
+    this.categories$ = this.categoryStore.select(fromCategoryStore.getCategories);
     // set meta tags
     this.seo.generateTags({
       title: 'Medium clone',
@@ -130,6 +215,86 @@ export class LandingComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * for drag scroll
+   */
+
+  clickItem(item) {
+    console.log('item clicked');
+  }
+
+  leftBoundStat(reachesLeftBound: boolean) {
+    this.leftNavDisabled = reachesLeftBound;
+  }
+
+  rightBoundStat(reachesRightBound: boolean) {
+    this.rightNavDisabled = reachesRightBound;
+  }
+
+  onSnapAnimationFinished() {
+    console.log('snap animation finished');
+  }
+
+  onIndexChanged(idx) {
+    this.index = idx;
+    console.log('current index: ' + idx);
+  }
+
+  onDragScrollInitialized() {
+    console.log('first demo drag scroll has been initialized.');
+  }
+
+  LoadCategory(): Observable<boolean> {
+    return this.categoryStore.select(fromCategoryStore.getCategoriesLoaded).pipe(
+      tap(loaded => {
+        console.log(loaded);
+        if (!loaded) {
+          this.categoryStore.dispatch(new fromCategoryStore.LoadCategory);
+        }
+      }),
+      filter(loaded => !loaded),
+      take(1)
+    )
+  }
+
+  LoadArticles(): Observable<boolean> {
+    return this.articleStore.select(fromCategoryStore.getCategoriesLoaded).pipe(
+      tap(loaded => {
+        console.log(loaded);
+        if (!loaded) {
+          this.articleStore.dispatch(new fromArticleStore.LoadArticles(1));
+        }
+      }),
+      filter(loaded => !loaded),
+      take(1)
+    );
+  }
+
+  zipLoad() {
+    this.categoryStore.select(fromCategoryStore.getCategoriesLoaded).pipe(
+      tap(categoryloaded => {
+        console.log('categoryloaded', categoryloaded);
+        if (!categoryloaded) {
+          this.categoryStore.dispatch(new fromCategoryStore.LoadCategory);
+        }
+      },
+        filter(categoryLoaded => !categoryLoaded)),
+      take(2)
+    ).subscribe(x => {
+      if (x) {
+        this.articleStore.select(fromArticleStore.getArticleLoaded).pipe(
+          tap(articleloaded => {
+            console.log('articleloaded', articleloaded);
+            if (!articleloaded) {
+              this.articleStore.dispatch(new fromArticleStore.LoadArticles(1));
+            }
+          },
+            filter(articleloaded => !articleloaded)),
+          take(1)
+        ).subscribe();
+      }
+    });
+  }
   /**
    * unsubscribe all the observables here
    */

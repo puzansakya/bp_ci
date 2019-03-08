@@ -59,7 +59,7 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
-    HttpClientModule,
+    HttpClientModule,    
     SharedModule,
     ToastrModule.forRoot({
       timeOut: 2000,

@@ -4911,6 +4911,10 @@ ngrx-store-freeze@^0.2.4:
   dependencies:
     deep-freeze-strict "^1.1.1"
 
+ngx-drag-scroll@^7.1.4:
+  version "7.1.4"
+  resolved "https://registry.yarnpkg.com/ngx-drag-scroll/-/ngx-drag-scroll-7.1.4.tgz#1b6a9493c52a42c56536b8208d9098c3181b1514"
+
 ngx-quill@^4.6.3:
   version "4.6.10"
   resolved "https://registry.yarnpkg.com/ngx-quill/-/ngx-quill-4.6.10.tgz#423a5355a0d243652275585eecd8888c75cf302a"

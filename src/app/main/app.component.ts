@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 // store and actions
 import { Store } from '@ngrx/store';
 import * as fromAuthStore from '../root-store/auth-store';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',

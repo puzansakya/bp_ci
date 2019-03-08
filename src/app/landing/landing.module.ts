@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 // stores
 import { ArticleStoreModule } from '../root-store/article-store/article-store.module';
 import { AuthStoreModule } from '../root-store/auth-store/auth-store.module';
-
+import { CategoryStoreModule } from '../root-store/category-store/category-store.module';
 
 // virtual scroller
 import { VirtualScrollerModule } from '../virtual-scroller/virtual-scroller';
@@ -21,6 +21,9 @@ import * as fromGuards from './guards';
 
 // scroll event
 import { ScrollEventModule } from '../scroll-event/scroll.module';
+
+// drag scroll
+import { DragScrollModule } from 'ngx-drag-scroll/lib/ngx-drag-scroll.module';
 
 // routes
 export const ROUTES: Routes = [
@@ -38,8 +41,10 @@ export const ROUTES: Routes = [
     SharedModule,
     ArticleStoreModule,
     AuthStoreModule,
+    CategoryStoreModule,
     VirtualScrollerModule,
-    ScrollEventModule
+    ScrollEventModule,
+    DragScrollModule
   ],
   providers: [...fromGuards.guards],
   declarations: [...fromContainers.containers],

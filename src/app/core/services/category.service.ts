@@ -12,7 +12,7 @@ export class CategoryService {
 
     getCategory(): Observable<ResponseWrapper<Category>> {
         return this.http
-            .get<ResponseWrapper<Category>>(`https://medium-puzan.herokuapp.com/api/v1/categories?limit=30`)
+            .get<ResponseWrapper<Category>>(`http://localhost:3000/api/v1/categories?limit=30`)
             .pipe(catchError((error: any) => Observable.throw(error.json())));
     }
 

@@ -1,0 +1,21 @@
+
+drag-scroll {
+    height: 42px;    
+}
+
+.category {
+    padding: 7px;
+    margin: 2px 5px 2px 0;
+    border: 1px solid #ccc;
+    text-align: center;
+    &:hover {
+        cursor: pointer;
+    }
+    &-active {
+        background-color: #5cb85c;
+        color: #fff;
+        &:hover {
+            background-color: #449d44;
+        }
+    }
+}
