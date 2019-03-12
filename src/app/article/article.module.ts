@@ -8,6 +8,9 @@ import * as fromContainers from './containers';
 // guards
 import * as fromGuards from './guards';
 
+// disqus
+import { DisqusModule } from 'ngx-disqus';
+
 // stores
 import { ArticleStoreModule } from '../root-store/article-store/article-store.module';
 import { AuthStoreModule } from '../root-store/auth-store/auth-store.module';
@@ -26,7 +29,8 @@ export const ROUTES: Routes = [
         CommonModule,
         RouterModule.forChild(ROUTES),
         ArticleStoreModule,
-        AuthStoreModule
+        AuthStoreModule,
+        DisqusModule,
     ],
     providers: [...fromGuards.guards],
     declarations: [...fromContainers.containers],

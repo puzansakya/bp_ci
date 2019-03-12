@@ -267,7 +267,11 @@
       <!-- end post -->
 
     </div>
+    <!-- Begin Disqus -->
+    <disqus [identifier]="(article$ | async).slug"></disqus>
+    <!-- End Disqus -->
   </div>
+
 </div>
 <!-- End Related Posts -->
 

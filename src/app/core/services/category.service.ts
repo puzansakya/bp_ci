@@ -18,13 +18,13 @@ export class CategoryService {
 
     createCategory(payload: Category): Observable<Category> {
         return this.http
-            .post<Category>(`https://medium-puzan.herokuapp.com/api/v1/categories`, payload)
+            .post<Category>(`http://localhost:3000/api/v1/categories`, payload)
             .pipe(catchError((error: any) => Observable.throw(error.json())));
     }
 
     updateCategory(payload: Category): Observable<Category> {
         return this.http
-            .put<Category>(`https://medium-puzan.herokuapp.com/api/v1/categories/${payload.id}`, payload)
+            .put<Category>(`http://localhost:3000/api/v1/categories/${payload.id}`, payload)
             .pipe(catchError((error: any) => Observable.throw(error.json())));
     }    
 }

@@ -386,6 +386,18 @@
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/@nguniversal/module-map-ngfactory-loader/-/module-map-ngfactory-loader-7.1.0.tgz#70ea905c1b32c2edc484cb77aa7a3f3208069966"
 
+"@ngx-progressbar/core@^5.3.2":
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/@ngx-progressbar/core/-/core-5.3.2.tgz#d2e76034324d459dbbd7b9d89aa3b550db5e46f6"
+  dependencies:
+    tslib "^1.9.0"
+
+"@ngx-progressbar/router@^5.3.2":
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/@ngx-progressbar/router/-/router-5.3.2.tgz#b1ff7f1082e6e2ecd459a6a02973e334a3d9a797"
+  dependencies:
+    tslib "^1.9.0"
+
 "@schematics/angular@7.0.7":
   version "7.0.7"
   resolved "https://registry.yarnpkg.com/@schematics/angular/-/angular-7.0.7.tgz#2aabf02779b1e5c6035135a652b5402f5785eae6"
@@ -4910,6 +4922,12 @@ ngrx-store-freeze@^0.2.4:
   resolved "https://registry.yarnpkg.com/ngrx-store-freeze/-/ngrx-store-freeze-0.2.4.tgz#146687cdf7e21244eb9003c7e883f2125847076c"
   dependencies:
     deep-freeze-strict "^1.1.1"
+
+ngx-disqus@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/ngx-disqus/-/ngx-disqus-2.4.3.tgz#1080b91cd20771b4499396da06f1431ce8d8bf68"
+  dependencies:
+    tslib "^1.9.0"
 
 ngx-drag-scroll@^7.1.4:
   version "7.1.4"

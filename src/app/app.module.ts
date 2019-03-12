@@ -34,10 +34,18 @@ import { reducers, effects, CustomSerializer } from "./root-store/router-store";
 // not used in production
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { storeFreeze } from 'ngrx-store-freeze';
+
+// pwas
 import { NgtUniversalModule } from '@ng-toolkit/universal';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
+// progeress bar
+import { NgProgressModule } from '@ngx-progressbar/core';
+import { NgProgressRouterModule } from '@ngx-progressbar/router';
+
+// disqus
+import { DISQUS_SHORTNAME } from 'ngx-disqus';
 
 // this would be done dynamically with webpack for builds
 // const environment = {
@@ -59,7 +67,7 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
-    HttpClientModule,    
+    HttpClientModule,
     SharedModule,
     ToastrModule.forRoot({
       timeOut: 2000,
@@ -70,12 +78,17 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
     NgtUniversalModule,
     AuthModule,
     StoreModule.forRoot(reducers, { metaReducers }),
+    NgProgressModule,
+    NgProgressRouterModule,
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule,
     environment.production ? [] : StoreDevtoolsModule.instrument(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
-  providers: [{ provide: RouterStateSerializer, useClass: CustomSerializer }, ...fromServices.services],
+  providers: [
+    { provide: RouterStateSerializer, useClass: CustomSerializer },
+    { provide: DISQUS_SHORTNAME, useValue: 'medpuz' },
+    ...fromServices.services],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
