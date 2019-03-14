@@ -26,7 +26,7 @@ export class CategoriesEffects {
 
     @Effect()
     loadCategories$ = ({ debounce = 3000, scheduler = asyncScheduler } = {}): Observable<Action> => this.actions$.pipe(
-        debounceTime(debounce, scheduler),
+        // debounceTime(debounce, scheduler),
         ofType(categoryActions.LOAD_CATEGORY),
         switchMap(() => {
             console.log('LoadCategory');

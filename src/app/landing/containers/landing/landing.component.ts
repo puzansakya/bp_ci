@@ -7,8 +7,8 @@ import * as fromAuthStore from '../../../root-store/auth-store';
 import * as fromCategoryStore from '../../../root-store/category-store';
 
 // rxjs
-import { Observable, Subject, zip } from 'rxjs';
-import { takeUntil, take, tap, filter, switchMap, map, concatMap, mergeMap } from 'rxjs/operators';
+import { Observable, Subject, zip, of } from 'rxjs';
+import { takeUntil, take, tap, filter, switchMap, map, concatMap, mergeMap, delay } from 'rxjs/operators';
 
 
 // models
@@ -23,8 +23,6 @@ import { SeoService } from '../../../core/services';
 // platform
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { LoadCategory } from '../../../root-store/category-store';
-import { getCategoryLoaded } from '../../../root-store/category-store/reducers/category.reducers';
 import { Category } from '../../../core/models/category.model';
 
 @Component({
@@ -78,6 +76,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   // containers for store observable
   categories$: Observable<Category[]>;
+  //  = of(this.categoryList).pipe(delay(5000));
   articles$: Observable<Article[]>;
   loading$: Observable<boolean>;
 
@@ -286,7 +285,10 @@ export class LandingComponent implements OnInit, OnDestroy {
           tap(articleloaded => {
             console.log('articleloaded', articleloaded);
             if (!articleloaded) {
-              this.articleStore.dispatch(new fromArticleStore.LoadArticles(1));
+              if (isPlatformBrowser(this.platformId)) {
+                // dispatch action to load articles
+                this.articleStore.dispatch(new fromArticleStore.LoadArticles(1));
+              }
             }
           },
             filter(articleloaded => !articleloaded)),

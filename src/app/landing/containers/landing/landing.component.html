@@ -10,23 +10,25 @@
 
 
     <!-- drag scroll for categories -->
-    <section class="featured-posts">             
-        <drag-scroll 
-            class="demo-one" 
-            drag-scroll-y-disabled="true" 
-            scroll-x-wheel-enabled="true" 
-            scrollbar-hidden="true" 
-            (dsInitialized)="onDragScrollInitialized()"
-            (indexChanged)="onIndexChanged($event)" 
-            (reachesLeftBound)="leftBoundStat($event)" 
-            (reachesRightBound)="rightBoundStat($event)"
-            (snapAnimationFinished)="onSnapAnimationFinished()" 
-            #nav>
-            <!-- <img drag-scroll-item *ngFor="let image of imagelist" [src]="image" (click)="clickItem(image)" /> -->
-            <div drag-scroll-item class="category" *ngFor="let category of categories$ | async">
-            {{category.category}}
-            </div>
-        </drag-scroll>        
+    <section class="featured-posts" *ngIf="(categories$ | async) as categories">             
+        <div *ngIf="categories.length">
+            <drag-scroll 
+                class="demo-one" 
+                drag-scroll-y-disabled="true" 
+                scroll-x-wheel-enabled="true" 
+                scrollbar-hidden="true" 
+                (dsInitialized)="onDragScrollInitialized()"
+                (indexChanged)="onIndexChanged($event)" 
+                (reachesLeftBound)="leftBoundStat($event)" 
+                (reachesRightBound)="rightBoundStat($event)"
+                (snapAnimationFinished)="onSnapAnimationFinished()" 
+                #nav>
+                <!-- <img drag-scroll-item *ngFor="let image of imagelist" [src]="image" (click)="clickItem(image)" /> -->
+                <div drag-scroll-item class="category" *ngFor="let category of categories">
+                {{category.category}}
+                </div>
+            </drag-scroll>        
+        </div>
     </section>
 
     <!-- Begin Featured
