@@ -1,7 +1,7 @@
 
 exports.seed = function (knex, Promise) {
   // Deletes ALL existing entries
-  return knex('tbl_user_roles').del()
+  return knex('user_roles').del()
     .then(function () {
       return knex('tbl_users').del();
     })
