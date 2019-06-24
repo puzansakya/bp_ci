@@ -59,7 +59,7 @@ const options = {
 const swaggerSpec = swaggerJSDoc(options);
 const DIST_FOLDER = path.join(process.cwd(), 'dist');
 
-// const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require('../../dist/server/main');
+const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require('../../dist/server/main');
 
 class App {
 
@@ -67,7 +67,7 @@ class App {
     public express      : express.Application;
 
     constructor() {        
-        Model.knex(Knex(objection.development));
+        Model.knex(Knex(objection.production));
 
         this.httpFlush  = new HttpFlush();
         this.express    = express();
@@ -88,32 +88,32 @@ class App {
         this.express.use(compression());
         this.express.use(helmet());    
 
-        // if (process.env.mode === 'prod') {
-        //     let template = fs.readFileSync(
-        //         path.join(
-        //             DIST_FOLDER, 'browser', 
-        //             'index.html'
-        //     )).toString();
+        if (process.env.mode === 'prod') {
+            let template = fs.readFileSync(
+                path.join(
+                    DIST_FOLDER, 'browser', 
+                    'index.html'
+            )).toString();
 
-        //     this.express.engine(
-        //         'html', 
-        //         (_, options, callback) => {
-        //             renderModuleFactory(AppServerModuleNgFactory, {
-        //             // Our index.html
-        //             document    : template,
-        //             url         : options.req.url,
-        //             // DI so that we can get lazy-loading to work differently (since we need it to just instantly render it)
-        //             extraProviders: [
-        //                 provideModuleMap(LAZY_MODULE_MAP)
-        //             ]
-        //         }).then(html => {
-        //             callback(null, html);
-        //         });
-        //     });
-        // }
+            this.express.engine(
+                'html', 
+                (_, options, callback) => {
+                    renderModuleFactory(AppServerModuleNgFactory, {
+                    // Our index.html
+                    document    : template,
+                    url         : options.req.url,
+                    // DI so that we can get lazy-loading to work differently (since we need it to just instantly render it)
+                    extraProviders: [
+                        provideModuleMap(LAZY_MODULE_MAP)
+                    ]
+                }).then(html => {
+                    callback(null, html);
+                });
+            });
+        }
 
-        // this.express.set('view engine', 'html');        
-        // this.express.set('views', path.join(DIST_FOLDER, 'browser'));
+        this.express.set('view engine', 'html');        
+        this.express.set('views', path.join(DIST_FOLDER, 'browser'));
 
 
     }
