@@ -1,3 +1,6 @@
+# Description
+This is medium clone sample project created to understand and comprehend working mechanism of angular and server side rendering process. It includes fetures like seo optimization and pwa.
+
 # Live
 http://medium-puzan.herokuapp.com/
 
