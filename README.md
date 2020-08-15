@@ -1,3 +1,9 @@
+# Live
+http://medium-puzan.herokuapp.com/
+
+username: admin@gmail.com
+password: password123
+
 # Connection with heroku postgres
 Heroku postgres requires following properties to be configured in driver
 ```
